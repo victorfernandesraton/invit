@@ -14,9 +14,9 @@ class Login extends Nullstack {
   loadingLogin = false
 
   async initiate(context: NullstackClientContext<LoginContext>) {
-    const { error } = await context.database.auth.getSession()
-    if (!error) {
-      context.path = '/home'
+    const { data } = await context.database.auth.getSession()
+    if (data?.session?.user?.id) {
+      context.router.path = '/'
     }
   }
 
@@ -27,7 +27,7 @@ class Login extends Nullstack {
       password: this.password,
     })
     this.loadingLogin = false
-    if (!error) {
+    if (error) {
       this.error = error
     } else {
       this.initiate()
@@ -36,8 +36,8 @@ class Login extends Nullstack {
 
   render() {
     return (
-      <main class="flex justify-center font-mono">
-        <div class="h-1/3 content-center block p-4 rounded-lg bg-white max-w-md border border-black border-b-4 border-r-4">
+      <main class="mt-48 align-middle flex justify-center">
+        <div class="h-1/3 content-center flex p-6 rounded-lg bg-white max-w-md border border-black border-b-4 border-r-4">
           <form>
             <div class="form-group mb-6">
               <label for="exampleInputEmail2" class="form-label inline-block mb-2 text-gray-700">
@@ -103,7 +103,7 @@ class Login extends Nullstack {
                   disabled={this.loadingLogin}
                   type="checkbox"
                   class="
-                  border border-b-4 border-r-4 border-black hover:shadow-sm
+                  border border-b-4 border-r-4 border-black
                   form-check-input appearance-none h-4 w-4 rounded-sm bg-white checked:bg-pink-600 checked:border-gray-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain mr-2 cursor-pointer"
                   id="exampleCheck2"
                 />
@@ -123,16 +123,13 @@ class Login extends Nullstack {
             mb-6
             bg-pink-600
             text-white
-            
             font-medium
             text-xs
             leading-tight
             uppercase
             rounded
-            border border-b-4 border-r-4 border-black shadow-lg hover:shadow-sm
-            hover:bg-white-700
-            focus:bg-pink-700 focus:shadow-lg focus:outline-none focus:ring-0
-            active:bg-pink-800 active:shadow-lg
+            border border-b-4 border-r-4 border-black
+            hover:bg-white hover:text-pink-700 hover:border-pink-700
             transition
             duration-150
             ease-in-out"
@@ -151,7 +148,7 @@ class Login extends Nullstack {
                 text-center
             uppercase
             rounded
-            border border-b-4 border-r-4 border-black shadow-lg hover:shadow-sm
+            border border-b-4 border-r-4 border-black
 "
               >
                 <p>{this.error?.error_description ?? this.error?.message}</p>
@@ -160,8 +157,8 @@ class Login extends Nullstack {
             <p class="text-gray-800 mt-6 text-center">
               Not a member?{' '}
               <a
-                href="#!"
-                class="text-blue-600 hover:text-blue-700 focus:text-blue-700 transition duration-200 ease-in-out"
+                path="/auth/signup"
+                class="text-pink-600 hover:text-pink-700 hover:underline focus:text-pink-700 transition duration-200 ease-in-out"
               >
                 Register
               </a>
@@ -169,7 +166,7 @@ class Login extends Nullstack {
             <div class="mt-6 text-center">
               <a
                 href="#!"
-                class="text-blue-600 hover:text-blue-700 focus:text-blue-700 transition duration-200 ease-in-out"
+                class="text-pink-600 hover:text-pink-700 hover:underline focus:text-pink-700 transition duration-200 ease-in-out"
               >
                 Forgot password?
               </a>
