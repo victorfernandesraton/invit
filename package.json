@@ -13,5 +13,9 @@
   "scripts": {
     "start": "npx nullstack start",
     "build": "npx nullstack build"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.2.3",
+    "tw-elements": "^1.0.0-alpha13"
   }
 }

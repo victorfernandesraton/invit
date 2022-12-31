@@ -1,6 +1,8 @@
 import Nullstack, { NullstackClientContext } from 'nullstack'
 
 import '../tailwind.css'
+
+import Auth from './auth/index'
 import Home from './Home'
 
 class Application extends Nullstack {
@@ -13,6 +15,7 @@ class Application extends Nullstack {
     return (
       <body class="">
         <Home route="/" />
+        <Auth route="/auth/:slug" />
       </body>
     )
   }
