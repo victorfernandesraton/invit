@@ -6,23 +6,33 @@ import '../tailwind.css'
 
 import Auth from './auth/index'
 import Home from './Home'
+import Navbar from './mavbar'
 
 type ApplicationProps = {
   database: SupabaseClient
 }
 
+const PUBLIC_ROUTES = ['/auth', '/auth/signup', '/auth/signin']
+
 class Application extends Nullstack {
 
   logged = false
+
   prepare({ page }: NullstackClientContext) {
     page.locale = 'en-US'
   }
 
+  async initiate() {
+    await this.update()
+  }
+
   async update(context: NullstackClientContext<ApplicationProps>) {
-    const { data } = await context.database.auth.getSession()
-    this.logged = data?.session?.user?.id
-    if (!this.logged) {
-      context.router.path = '/auth'
+    if (!PUBLIC_ROUTES.includes(context.router.path)) {
+      const { data } = await context.database.auth.getSession()
+      this.logged = data?.session?.user?.id
+      if (!this.logged) {
+        context.router.path = '/auth'
+      }
     }
   }
 
@@ -32,14 +42,10 @@ class Application extends Nullstack {
     context.router.path = '/auth'
   }
 
-  renderNav() {
-    return <buttom onclick={this.logout}>Logout</buttom>
-  }
-
   render() {
     return (
       <body class="font-mono">
-        {this.logged && <Nav />}
+        {this.logged && <Navbar logout={this.logout} />}
         <Home route="/" />
         <Auth route="/auth/:slug" />
       </body>
