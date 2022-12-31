@@ -37,7 +37,7 @@ class Login extends Nullstack {
   render() {
     return (
       <main class="mt-48 align-middle flex justify-center">
-        <div class="h-1/3 content-center flex p-6 rounded-lg bg-white max-w-md border border-black border-b-4 border-r-4">
+        <div class="h-1/3 content-center flex p-6 rounded-lg bg-amber-100 max-w-md border border-black border-b-4 border-r-4">
           <form>
             <div class="form-group mb-6">
               <label for="exampleInputEmail2" class="form-label inline-block mb-2 text-gray-700">

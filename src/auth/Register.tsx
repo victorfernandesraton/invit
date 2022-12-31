@@ -35,7 +35,7 @@ class Register extends Nullstack {
   render() {
     return (
       <main class="mt-48 align-middle flex justify-center">
-        <div class="justify-center p-6 rounded-lg bg-white  border border-black border-b-4 border-r-4 max-w-md">
+        <div class="justify-center p-6 rounded-lg bg-amber-100  border border-black border-b-4 border-r-4 max-w-md">
           <form>
             <div class="form-group mb-6">
               <label for="exampleInput125" class="form-label inline-block mb-2 text-gray-700">
