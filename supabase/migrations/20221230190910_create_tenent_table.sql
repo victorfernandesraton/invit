@@ -5,7 +5,6 @@ create table "public"."tenent" (
     "status" bigint default '1'::bigint
 );
 
-
 alter table "public"."tenent" enable row level security;
 
 CREATE UNIQUE INDEX tenent_pkey ON public.tenent USING btree (id);
