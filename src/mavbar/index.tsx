@@ -1,10 +1,12 @@
-import Nullstack from 'nullstack'
+import Nullstack, { NullstackNode } from 'nullstack'
 
 import Dropdown from '../components/dropdown'
 import { PRIVATE_RUTE } from './constants'
 
+type LogoutCallback = () => void
+
 type Props = {
-  logout: () => void
+  logout: LogoutCallback
 }
 
 type NavItemProps = {
@@ -12,6 +14,10 @@ type NavItemProps = {
   url: string
   current?: boolean
 }
+
+declare function NavItem(props: NavItemProps): NullstackNode
+declare function SideMenu(props: Props): NullstackNode
+declare function MobileMenu(): NullstackNode
 
 class Navbar extends Nullstack<Props> {
 
@@ -134,6 +140,45 @@ class Navbar extends Nullstack<Props> {
     )
   }
 
+  renderMobileMenu() {
+    return (
+      <div class="md:hidden">
+        <Dropdown
+          options={PRIVATE_RUTE}
+          header={
+            <>
+              <div
+                class="md:hidden flex items-center
+                      mr-2
+                      border
+                      border-pink-600 border-r-2 border-b-2
+                      hover:border-black
+                      hover:bg-pink-700
+                      h-8
+                      "
+              >
+                <button class="outline-none mobile-menu-button">
+                  <svg
+                    class="w-6 h-6 text-pink-700 hover:text-black"
+                    x-show="!showMenu"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                </button>
+              </div>
+            </>
+          }
+        />
+      </div>
+    )
+  }
+
   render({ logout }: Props) {
     return (
       <nav class="relative w-full flex flex-wrap items-center justify-between py-3 bg-white text-gray-500 hover:text-gray-700 focus:text-gray-700 border-black border-2">
@@ -150,40 +195,7 @@ class Navbar extends Nullstack<Props> {
             </ul>
 
             <div class="flex items-center justify-end align-bottom self-center w-full">
-              <div class="md:hidden">
-                <Dropdown
-                  options={PRIVATE_RUTE}
-                  header={
-                    <>
-                      <div
-                        class="md:hidden flex items-center
-                      mr-2
-                      border
-                      border-pink-600 border-r-2 border-b-2
-                      hover:border-black
-                      hover:bg-pink-700
-                      h-8
-                      "
-                      >
-                        <button class="outline-none mobile-menu-button">
-                          <svg
-                            class="w-6 h-6 text-pink-700 hover:text-black"
-                            x-show="!showMenu"
-                            fill="none"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path d="M4 6h16M4 12h16M4 18h16" />
-                          </svg>
-                        </button>
-                      </div>
-                    </>
-                  }
-                />
-              </div>
+              <MobileMenu />
               <SideMenu logout={logout} />
             </div>
           </div>
