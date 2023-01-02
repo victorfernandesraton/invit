@@ -5,6 +5,7 @@ import { SupabaseClient } from '@supabase/supabase-js'
 import '../tailwind.css'
 
 import Auth from './auth/index'
+import Commitment from './commitment'
 import Home from './Home'
 import Navbar from './mavbar'
 import { PUBLIC_ROUTES } from './mavbar/constants'
@@ -47,6 +48,7 @@ class Application extends Nullstack {
         {this.logged && <Navbar logout={this.logout} />}
         <Home route="/" />
         <Auth route="/auth/:slug" />
+        <Commitment route="/commitment/:slug" />
       </body>
     )
   }
