@@ -7,12 +7,11 @@ import '../tailwind.css'
 import Auth from './auth/index'
 import Home from './Home'
 import Navbar from './mavbar'
+import { PUBLIC_ROUTES } from './mavbar/constants'
 
 type ApplicationProps = {
   database: SupabaseClient
 }
-
-const PUBLIC_ROUTES = ['/auth', '/auth/signup', '/auth/signin']
 
 class Application extends Nullstack {
 
