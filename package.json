@@ -5,7 +5,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nullstack": "~0.17.0",
+    "nullstack": "^0.17.2",
     "postcss-loader": "^7.0.1",
     "supabase": "^1.27.7",
     "tailwindcss": "^3.0.0"
@@ -13,7 +13,8 @@
   "scripts": {
     "start": "npx nullstack start",
     "build": "npx nullstack build",
-    "migrate:diff" : "npx supabase db diff --use-migra -f"
+    "migrate:diff": "npx supabase db diff --use-migra -f",
+    "migrate:types": "npx supabase gen types typescript --local > lib/database.types.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.2.3",

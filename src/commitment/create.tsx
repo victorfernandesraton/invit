@@ -1,12 +1,45 @@
-import Nullstack from 'nullstack'
+import Nullstack, { NullstackClientContext } from 'nullstack'
+
+import { SupabaseClient } from '@supabase/supabase-js'
+
+import { Database } from '../../lib/database.types'
+
+type CreateCommitmentContext = {
+  database: SupabaseClient
+}
+
+type Tenent = {
+  id: string
+  name: string
+}
 
 class CreateCommitment extends Nullstack {
 
+  tenent = null
+  tenents: Tenent[] = []
+  loadingSubmit = false
   showEndAt = null
   title = null
   description = null
   startAt = null
   endAt = null
+  error = null
+  result: Database['public']['Tables']['commitment']['Row'] = null
+
+  async initiate({ database }: CreateCommitmentContext) {
+    const { data: profile, error } = await database
+      .from('profile')
+      .select('tenent (name, id), id')
+      .neq('status', 0)
+      .neq('tenent.status', 0)
+    if (error) {
+      this.error = error
+    }
+    this.tenents = Array.from(new Set(profile.map((item) => item.tenent)))
+    if (this.tenents.length == 1) {
+      this.tenent = this.tenents[0].id
+    }
+  }
 
   update() {
     if (!this.showEndAt) {
@@ -14,13 +47,67 @@ class CreateCommitment extends Nullstack {
     }
   }
 
+  async submit({ database }: NullstackClientContext<CreateCommitmentContext>) {
+    this.loadingSubmit = true
+    const { data, error } = await database
+      .from('commitment')
+      .insert<Database['public']['Tables']['commitment']['Insert']>([
+        {
+          title: this.title,
+          start_at: this.startAt,
+          description: this.description,
+          end_at: this.endAt,
+          tenent_id: this.tenent,
+        },
+      ])
+      .select('*')
+
+    console.log(data, error)
+    this.loadingSubmit = false
+    this.result = data?.[0]
+    this.error = error
+  }
+
   render() {
     return (
       <div class="mt-12 align-middle flex justify-center h-full">
         <div class="h-1/3 content-center flex flex-col p-6 rounded-lg bg-amber-100 max-w-md border border-black border-b-4 border-r-4">
           <h1 class="text-xl md:text-2xl py-2">Create commitment</h1>
-          <form>
+          <form onsubmit={this.submit}>
             <div class="flex justify-center flex-col">
+              {this.tenents.length > 1 && (
+                <div class="form-group mb-6">
+                  <label for="tenent" class="form-label inline-block mb-2 text-gray-700">
+                    Tenent
+                  </label>
+                  <select
+                    name="tenent"
+                    id="tenent"
+                    bind={this.tenent}
+                    class="form-control
+                block
+                h-11
+                w-full
+                px-3
+                py-1.5
+                text-base
+                font-normal
+                text-gray-700
+                bg-white bg-clip-padding
+                 border border-b-4 border-r-4 border-black
+                rounded
+                transition
+                ease-in-out
+                m-0
+                focus:text-gray-700 focus:bg-white focus:border-pink-600 focus:outline-none"
+                    required
+                  >
+                    {this.tenents.map((tenetOption) => (
+                      <option value={tenetOption.id}>{tenetOption.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
               <div class="form-group mb-6">
                 <label for="title" class="form-label inline-block mb-2 text-gray-700">
                   Title
@@ -28,7 +115,6 @@ class CreateCommitment extends Nullstack {
                 <input
                   id="title"
                   bind={this.title}
-                  type="email"
                   class="form-control
               block
               h-11
@@ -57,7 +143,6 @@ class CreateCommitment extends Nullstack {
                 <input
                   id="description"
                   bind={this.description}
-                  type="email"
                   class="form-control
               block
               h-11
@@ -88,6 +173,7 @@ class CreateCommitment extends Nullstack {
                   type="datetime-local"
                   id="startAt"
                   name="startAt"
+                  required
                   bind={this.startAt}
                   class="form-control
                   block
@@ -127,12 +213,13 @@ class CreateCommitment extends Nullstack {
                 </div>
               </div>
               {this.showEndAt && (
-                <div class="form-group mb-6 mt-6">
+                <div class="form-group mb-6">
                   <label for="endAt" class="form-label inline-block mb-2 text-gray-700">
                     End at
                   </label>
                   <input
                     bind={this.endAt}
+                    required={this.showEndAt}
                     aria-describedby="dateHelp"
                     type="datetime-local"
                     id="endAt"
@@ -180,6 +267,49 @@ class CreateCommitment extends Nullstack {
               Submit
             </button>
           </form>
+          {this.error && (
+            <div
+              class="
+                py-2.5
+                px-3
+                bg-red-500
+                text-white
+                align-middle
+                justify-center
+                text-center
+            uppercase
+            rounded
+            border border-b-4 border-r-4 border-black
+"
+            >
+              <p>Error on create commitment</p>
+            </div>
+          )}
+          {this.result && (
+            <div
+              class="
+                py-2.5
+                px-3
+                bg-green-500
+                text-white
+                align-middle
+                justify-center
+                text-center
+            uppercase
+            rounded
+            border border-b-4 border-r-4 border-black
+"
+            >
+              Sucess go to commitment page{' '}
+              <a
+                class="text-pink-600 hover:text-pink-700 hover:underline focus:text-pink-700 transition duration-200 ease-in-out"
+                href={`/commitment/${this.result.id}`}
+              >
+                Here
+              </a>
+              <p />
+            </div>
+          )}
         </div>
       </div>
     )
