@@ -32,9 +32,7 @@ class CreateCommitment extends Nullstack {
       .select('tenent (name, id), id')
       .neq('status', 0)
       .neq('tenent.status', 0)
-    if (error) {
-      this.error = error
-    }
+    this.error = error
     this.tenents = Array.from(new Set(profile.map((item) => item.tenent)))
     if (this.tenents.length == 1) {
       this.tenent = this.tenents[0].id
