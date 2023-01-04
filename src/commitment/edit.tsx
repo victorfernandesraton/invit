@@ -3,6 +3,7 @@ import Nullstack, { NullstackClientContext } from 'nullstack'
 import { SupabaseClient } from '@supabase/supabase-js'
 
 import { Database } from '../../lib/database.types'
+import { parseDateToUTCString } from '../../lib/utils/date'
 
 type EditCommitmentContext = {
   database: SupabaseClient
@@ -73,6 +74,7 @@ class EditCommitment extends Nullstack {
         end_at: this.endAt ?? null,
         tenent_id: this.tenent.id,
       })
+      .eq('id', this.commitment.id)
       .select('*')
 
     this.error = error
@@ -195,6 +197,7 @@ class EditCommitment extends Nullstack {
                   type="datetime-local"
                   id="startAt"
                   name="startAt"
+                  min={parseDateToUTCString(new Date())}
                   value={this?.startAt?.toISOString?.().split('.')[0]}
                   onchange={({ event }) => {
                     this.startAt = new Date(event.target.value)
@@ -247,6 +250,7 @@ class EditCommitment extends Nullstack {
                     type="datetime-local"
                     id="endAt"
                     name="endAt"
+                    min={this.startAt ? parseDateToUTCString(new Date(this.startAt)) : parseDateToUTCString(new Date())}
                     value={this?.endAt?.toISOString?.().split('.')[0]}
                     onchange={({ event }) => {
                       this.endAt = new Date(event.target.value)

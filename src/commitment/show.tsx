@@ -4,6 +4,7 @@ import { SupabaseClient } from '@supabase/supabase-js'
 
 import { Database } from '../../lib/database.types'
 import { numToCurrency } from '../../lib/utils/currency'
+import { parseDateToString } from '../../lib/utils/date'
 
 declare function Item(props: Database['public']['Tables']['commitment']['Row']): NullstackNode
 
@@ -61,6 +62,7 @@ class ShowCommitments extends Nullstack {
     title,
     description,
     start_at,
+    end_at,
   }: NullstackClientContext<Database['public']['Tables']['commitment']['Row']>) {
     return (
       <div class="flex flex-col md:flex-row  rounded-lg bg-white border border-black border-b-4 border-r-4">
@@ -74,9 +76,16 @@ class ShowCommitments extends Nullstack {
             </div>
 
             <p class="text-gray-700 text-base mb-4">{description}</p>
-            <p class="text-pink-600 text-xs">
-              Start At: <spam class="text-gray-700">{start_at.toString()}</spam>
-            </p>
+            <div class="flex flex-row space-x-6">
+              <p class="text-gray-700 text-xs">
+                Start At: <spam class="text-pink-700">{parseDateToString(new Date(start_at))}</spam>
+              </p>
+              {end_at && (
+                <p class="text-gray-700 text-xs">
+                  End At: <spam class="text-pink-700">{parseDateToString(new Date(end_at))}</spam>
+                </p>
+              )}
+            </div>
           </div>
           <div class="p-6 py-2 md:py-6 mb-6 md:mb-0 flex flex-row space-x-4 md:w-1/3">
             <div class="flex flex-col">
