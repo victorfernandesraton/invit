@@ -3,7 +3,7 @@ import Nullstack, { NullstackClientContext } from 'nullstack'
 import { SupabaseClient } from '@supabase/supabase-js'
 
 import { Database } from '../../lib/database.types'
-import { parseDateToUTCString } from '../../lib/utils/date'
+import { parseDateToDefaultString, parseDateToUTCString } from '../../lib/utils/date'
 
 type EditCommitmentContext = {
   database: SupabaseClient
@@ -25,8 +25,8 @@ class EditCommitment extends Nullstack {
   showEndAt = null
   title = null
   description = null
-  startAt = null
-  endAt = null
+  startAt: Date = null
+  endAt: Date = null
   result: Database['public']['Tables']['commitment']['Row'] = null
 
   _setFormValues(commitment) {
@@ -190,15 +190,15 @@ class EditCommitment extends Nullstack {
               </div>
               <div class="form-group mb-6">
                 <label for="startAt" class="form-label inline-block mb-2 text-gray-700">
-                  Start at {this?.startAt?.toISOString?.().split('.')[0]}
+                  Start at
                 </label>
                 <input
                   aria-describedby="dateHelp"
                   type="datetime-local"
                   id="startAt"
                   name="startAt"
-                  min={parseDateToUTCString(new Date())}
-                  value={this?.startAt?.toISOString?.().split('.')[0]}
+                  min={parseDateToDefaultString(new Date())}
+                  value={parseDateToUTCString(this.startAt)}
                   onchange={({ event }) => {
                     this.startAt = new Date(event.target.value)
                   }}
@@ -250,7 +250,7 @@ class EditCommitment extends Nullstack {
                     type="datetime-local"
                     id="endAt"
                     name="endAt"
-                    min={this.startAt ? parseDateToUTCString(new Date(this.startAt)) : parseDateToUTCString(new Date())}
+                    min={this.startAt ? parseDateToDefaultString(new Date(this.startAt)) : undefined}
                     value={this?.endAt?.toISOString?.().split('.')[0]}
                     onchange={({ event }) => {
                       this.endAt = new Date(event.target.value)

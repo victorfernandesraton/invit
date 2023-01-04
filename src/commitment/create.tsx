@@ -3,7 +3,7 @@ import Nullstack, { NullstackClientContext } from 'nullstack'
 import { SupabaseClient } from '@supabase/supabase-js'
 
 import { Database } from '../../lib/database.types'
-import { parseDateToUTCString } from '../../lib/utils/date'
+import { parseDateToDefaultString } from '../../lib/utils/date'
 
 type CreateCommitmentContext = {
   database: SupabaseClient
@@ -172,7 +172,7 @@ class CreateCommitment extends Nullstack {
                   id="startAt"
                   name="startAt"
                   required
-                  min={parseDateToUTCString(new Date())}
+                  min={parseDateToDefaultString(new Date())}
                   bind={this.startAt}
                   class="form-control
                   block
@@ -219,7 +219,11 @@ class CreateCommitment extends Nullstack {
                   <input
                     bind={this.endAt}
                     required={this.showEndAt}
-                    min={this.startAt ? parseDateToUTCString(new Date(this.startAt)) : parseDateToUTCString(new Date())}
+                    min={
+                      this.startAt
+                        ? parseDateToDefaultString(new Date(this.startAt))
+                        : parseDateToDefaultString(new Date())
+                    }
                     aria-describedby="dateHelp"
                     type="datetime-local"
                     id="endAt"

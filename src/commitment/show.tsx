@@ -50,6 +50,13 @@ class ShowCommitments extends Nullstack {
           'tenent_id',
           this.tenents.map((item) => item.id),
         )
+        .order('start_at', {
+          ascending: true,
+        })
+        .order('end_at', {
+          ascending: true,
+          nullsFirst: false,
+        })
         .range(this.offset, this.limit)
 
       this.result = commitment
