@@ -54,13 +54,12 @@ class CreateCommitment extends Nullstack {
           title: this.title,
           start_at: this.startAt,
           description: this.description,
-          end_at: this.endAt,
+          end_at: this.endAt?.toString?.() ?? null,
           tenent_id: this.tenent,
         },
       ])
       .select('*')
 
-    console.log(data, error)
     this.loadingSubmit = false
     this.result = data?.[0]
     this.error = error

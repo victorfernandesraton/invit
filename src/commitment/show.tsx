@@ -57,6 +57,7 @@ class ShowCommitments extends Nullstack {
   }
 
   renderItem({
+    id,
     title,
     description,
     start_at,
@@ -65,7 +66,13 @@ class ShowCommitments extends Nullstack {
       <div class="flex flex-col md:flex-row  rounded-lg bg-white border border-black border-b-4 border-r-4">
         <div class="flex flex-col md:flex-row w-full">
           <div class="p-6 flex flex-col flex-1">
-            <h5 class="text-black text-lg font-medium mb-2">{title}</h5>
+            <div class="flex flex-row mb-2 space-x-2">
+              <h5 class="text-black text-lg font-medium">{title}</h5>
+              <a href={`/commitment/${id}`} class="text-pink-600 font-medium">
+                Editar
+              </a>
+            </div>
+
             <p class="text-gray-700 text-base mb-4">{description}</p>
             <p class="text-pink-600 text-xs">
               Start At: <spam class="text-gray-700">{start_at.toString()}</spam>
@@ -97,7 +104,29 @@ class ShowCommitments extends Nullstack {
     return (
       <div class="mt-8 flex align-middle justify-center">
         <div class="flex flex-col w-5/6 md:w-2/3">
-          <h3 class="text-black text-xl font-medium mb-4">Commitments</h3>
+          <div class="flex flex-row align-middle justify-between mb-4 w-full">
+            <h3 class="text-black text-xl font-medium">Commitments</h3>
+            <a href="/commitment/create">
+              <button
+                class=" w-20
+              bg-pink-600
+            text-white
+            font-medium
+            text-xs
+            h-8
+            leading-tight
+            uppercase
+            rounded
+            border border-b-4 border-r-4 border-black
+            hover:bg-white hover:text-pink-700 hover:border-pink-700
+            transition
+            duration-150
+            ease-in-out"
+              >
+                Create
+              </button>
+            </a>
+          </div>
           {this.result.map((item) => (
             <Item {...{ ...item }} />
           ))}
