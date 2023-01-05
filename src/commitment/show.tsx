@@ -118,6 +118,13 @@ class ShowCommitments extends Nullstack {
   }
 
   render() {
+    if (!this.initiated) {
+      return <div>Loading...</div>
+    }
+
+    if (!this.result.length && this.initiated) {
+      return <h1>Empty</h1>
+    }
     return (
       <div class="mt-8 flex align-middle justify-center">
         <div class="flex flex-col w-5/6 md:w-2/3">

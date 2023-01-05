@@ -40,9 +40,9 @@ class EditCommitment extends Nullstack {
     this.deleted = commitment.status === 0
   }
 
-  async initiate({ database, params }: NullstackClientContext<EditCommitmentContext>) {
+  async initiate(context: NullstackClientContext<EditCommitmentContext>) {
     this.loading = true
-    const { data: profile, error: errorProfile } = await database
+    const { data: profile, error: errorProfile } = await context.database
       .from('profile')
       .select('tenent (name, id), id')
       .neq('status', 0)
@@ -50,18 +50,22 @@ class EditCommitment extends Nullstack {
     this.error = errorProfile
     if (!this.error) {
       this.tenents = profile.map((item) => item.tenent)
-      const { data: commitment, error: commitmentError } = await database
+      const { data: commitment, error: commitmentError } = await context.database
         .from('commitment')
         .select('*')
         .in(
           'tenent_id',
           this.tenents.map((item) => item.id),
         )
-        .eq('id', params.slug)
+        .eq('id', context.params.slug)
 
       this.error = commitmentError
-      this.commitment = commitment[0]
-      this._setFormValues(commitment[0])
+      this.commitment = commitment?.[0] ?? null
+      if (this.commitment) {
+        this._setFormValues(this.commitment)
+      } else {
+        context.router.url = '/404'
+      }
     }
     this.loading = false
   }
@@ -108,6 +112,10 @@ class EditCommitment extends Nullstack {
   render() {
     if (!this.initiated) {
       return <>Loading</>
+    }
+
+    if (this.initiated && !this.commitment) {
+      return <h1>Not found</h1>
     }
     return (
       <div class="mt-12 align-middle flex justify-center h-full">
