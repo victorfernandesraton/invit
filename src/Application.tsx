@@ -1,4 +1,4 @@
-import Nullstack, { NullstackClientContext } from 'nullstack'
+import Nullstack, { NullstackClientContext, NullstackNode } from 'nullstack'
 
 import { SupabaseClient } from '@supabase/supabase-js'
 
@@ -13,6 +13,8 @@ import { PUBLIC_ROUTES } from './mavbar/constants'
 type ApplicationProps = {
   database: SupabaseClient
 }
+
+declare function NotFoundPage(): NullstackNode
 
 class Application extends Nullstack {
 
@@ -42,6 +44,14 @@ class Application extends Nullstack {
     context.router.path = '/auth'
   }
 
+  renderNotFoundPage(): NullstackNode {
+    return (
+      <div>
+        <h1>Not found</h1>
+      </div>
+    )
+  }
+
   render() {
     return (
       <body class="font-mono">
@@ -49,6 +59,7 @@ class Application extends Nullstack {
         <Home route="/" />
         <Auth route="/auth/:slug" />
         <Commitment route="/commitment/:slug" />
+        <NotFoundPage route="*" />
       </body>
     )
   }
