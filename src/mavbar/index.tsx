@@ -42,18 +42,6 @@ class Navbar extends Nullstack<Props> {
     )
   }
 
-  renderChangeTenent() {
-    return (
-      <Dropdown
-        title="Tenent"
-        options={[{ title: 'test' }]}
-        callback={(option) => {
-          console.log({ option })
-        }}
-      />
-    )
-  }
-
   renderSideMenu({ logout }: Props) {
     return (
       <div class="dropdown relative ml-2">

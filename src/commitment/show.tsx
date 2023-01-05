@@ -77,7 +77,7 @@ class ShowCommitments extends Nullstack {
         <div class="flex flex-col md:flex-row w-full">
           <div class="p-6 flex flex-col flex-1">
             <div class="flex flex-row mb-2 space-x-2">
-              <h5 class="text-black text-lg font-medium">{title}</h5>
+              <h5 class="text-black text-lg font-medium text-ellipsis	">{title}</h5>
               <a href={`/commitment/${id}`} class="text-pink-600 font-medium underline underline-offset-1">
                 Edit
               </a>
@@ -95,21 +95,21 @@ class ShowCommitments extends Nullstack {
               )}
             </div>
           </div>
-          <div class="p-6 py-2 md:py-6 mb-6 md:mb-0 flex flex-row space-x-4 md:w-1/3">
-            <div class="flex flex-col">
-              <p>Avaliable invites</p>
+          <div class="p-6 py-2 md:py-6 mb-6 md:mb-0 flex flex-row space-x-4 md:w-3/5 xl:w-3/6">
+            <div class="flex flex-col space-y-2">
+              <p class="md:text-sm">Avaliable invites</p>
               <div class="w-full bg-gray-200 rounded-full">
                 <div
-                  class="bg-pink-600 text-xs font-medium text-blue-100 text-center md:p-1 p-0.25 leading-none rounded-l-full border-2 border-black border-b-4 border-r-4"
+                  class="bg-pink-600 text-xs font-medium text-blue-100 text-center md:p-0.5 p-0.25 leading-none rounded-l-full border-2 border-black border-b-4 border-r-4"
                   style={`width: ${(5 / 10) * 100}%`}
                 >
                   <p class="text-white">2/10</p>
                 </div>
               </div>
             </div>
-            <div class="flex flex-col">
-              <p>Ammount total</p>
-              <h5 class="text-pink-700 md:text-xl text-sm">{numToCurrency(200.5)} R$</h5>
+            <div class="flex flex-col space-y-2">
+              <p class="md:text-sm">Ammount total</p>
+              <h5 class="text-pink-700 lg:text-xl md:text-md text-xs">{numToCurrency(200.5)} R$</h5>
             </div>
           </div>
         </div>
@@ -127,7 +127,7 @@ class ShowCommitments extends Nullstack {
     }
     return (
       <div class="mt-8 flex align-middle justify-center">
-        <div class="flex flex-col w-5/6 md:w-2/3">
+        <div class="flex flex-col w-5/6 lg:w-2/3">
           <div class="flex flex-row align-middle justify-between mb-4 w-full">
             <h3 class="text-black text-xl font-medium">Commitments</h3>
             <a href="/commitment/create">
