@@ -17,6 +17,7 @@ type Tenent = {
 class EditCommitment extends Nullstack {
 
   commitment: Database['public']['Tables']['commitment']["Row"] = null
+  deleted = false
   loading = false
   error = null
   tenents: Tenent[] = []
@@ -36,6 +37,7 @@ class EditCommitment extends Nullstack {
     this.showEndAt = commitment?.end_at ?? false
     this.endAt = new Date(commitment?.end_at)
     this.tenent = this.tenents.find((t) => t.id === commitment.tenent_id)
+    this.deleted = commitment.status === 0
   }
 
   async initiate({ database, params }: NullstackClientContext<EditCommitmentContext>) {
@@ -83,6 +85,20 @@ class EditCommitment extends Nullstack {
     this._setFormValues(data[0])
   }
 
+  async delete({ database }: NullstackClientContext<EditCommitmentContext>) {
+    this.loading = true
+    const { error } = await database
+      .from('commitment')
+      .update<Database['public']['Tables']['commitment']['Update']>({
+        status: 0,
+      })
+      .eq('id', this.commitment.id)
+
+    this.error = error
+    this.deleted = true
+    this.loading = false
+  }
+
   update() {
     if (!this.showEndAt) {
       this.endAt = null
@@ -96,7 +112,10 @@ class EditCommitment extends Nullstack {
     return (
       <div class="mt-12 align-middle flex justify-center h-full">
         <div class="h-1/3 content-center flex flex-col p-6 rounded-lg bg-amber-100 max-w-md border border-black border-b-4 border-r-4">
-          <h1 class="text-xl md:text-2xl py-2">Edit commitment</h1>
+          <div class="flex flex-col space-y-2 py-2">
+            <h1 class="text-xl md:text-2xl">Edit commitment</h1>
+            {this.deleted && <h2 class="text-gray-600 text-sm md:text-md">{`[Content deleted]`}</h2>}{' '}
+          </div>
           <form onsubmit={this.submit}>
             <div class="flex justify-center flex-col">
               {this.tenents.length > 1 && (
@@ -298,6 +317,28 @@ class EditCommitment extends Nullstack {
             >
               Submit
             </button>
+            <button
+              onclick={this.delete}
+              class="
+            w-full
+            px-6
+            py-2.5
+            mb-6
+            bg-red-600
+            text-white
+            font-medium
+            text-xs
+            leading-tight
+            uppercase
+            rounded
+            border border-b-4 border-r-4 border-black
+            hover:bg-white hover:text-red-700 hover:border-red-700
+            transition
+            duration-150
+            ease-in-out"
+            >
+              Delete
+            </button>
           </form>
           {this.error && (
             <div
@@ -317,7 +358,7 @@ class EditCommitment extends Nullstack {
               <p>Error on create commitment</p>
             </div>
           )}
-          {this.result && (
+          {(this.result || this.deleted) && (
             <div
               class="
                 py-2.5
@@ -332,7 +373,7 @@ class EditCommitment extends Nullstack {
             border border-b-4 border-r-4 border-black
 "
             >
-              Sucess to update{' '}
+              Sucess to {this.deleted ? 'deleted' : 'updated'}{' '}
               <a
                 class="text-pink-600 hover:text-pink-700 hover:underline focus:text-pink-700 transition duration-200 ease-in-out"
                 href={`/commitment`}

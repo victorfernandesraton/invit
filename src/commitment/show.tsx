@@ -50,6 +50,7 @@ class ShowCommitments extends Nullstack {
           'tenent_id',
           this.tenents.map((item) => item.id),
         )
+        .neq('status', 0)
         .order('start_at', {
           ascending: true,
         })
@@ -77,8 +78,8 @@ class ShowCommitments extends Nullstack {
           <div class="p-6 flex flex-col flex-1">
             <div class="flex flex-row mb-2 space-x-2">
               <h5 class="text-black text-lg font-medium">{title}</h5>
-              <a href={`/commitment/${id}`} class="text-pink-600 font-medium">
-                Editar
+              <a href={`/commitment/${id}`} class="text-pink-600 font-medium underline underline-offset-1">
+                Edit
               </a>
             </div>
 
