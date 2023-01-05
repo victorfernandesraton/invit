@@ -35,21 +35,22 @@ class Application extends Nullstack {
     page.locale = 'en-US'
   }
 
-  async findProfiles(context: NullstackClientContext<ApplicationProps>) {
-    const { data: profile, error: errorProfile } = await context.database
-      .from('profile')
-      .select('*, tenent (name, id)')
-      .neq('status', 0)
-      .neq('tenent.status', 0)
+  async hydrate(context: NullstackClientContext<ApplicationProps>) {
+    if (this.logged) {
+      const { data: profile, error: errorProfile } = await context.database
+        .from('profile')
+        .select('*, tenent (name, id)')
+        .neq('status', 0)
+        .neq('tenent.status', 0)
 
-    if (!errorProfile) {
-      context.profiles = profile
+      if (!errorProfile) {
+        context.profiles = profile
+      }
     }
   }
 
   async initiate() {
     await this.update()
-    await this.findProfiles()
   }
 
   async update(context: NullstackClientContext<ApplicationProps>) {

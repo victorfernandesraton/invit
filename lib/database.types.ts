@@ -14,6 +14,7 @@ export interface Database {
           commitment_id: string
           created_at: string | null
           currency: string
+          description: string
           id: string
           price: number
           remote: boolean
@@ -23,6 +24,7 @@ export interface Database {
           commitment_id: string
           created_at?: string | null
           currency?: string
+          description: string
           id?: string
           price?: number
           remote?: boolean
@@ -32,6 +34,7 @@ export interface Database {
           commitment_id?: string
           created_at?: string | null
           currency?: string
+          description?: string
           id?: string
           price?: number
           remote?: boolean

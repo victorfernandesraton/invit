@@ -4,9 +4,11 @@ import { SupabaseClient } from '@supabase/supabase-js'
 
 import { Database } from '../../lib/database.types'
 import { parseDateToDefaultString, parseDateToUTCString } from '../../lib/utils/date'
+import { Profile } from '../Application'
 
 type EditCommitmentContext = {
   database: SupabaseClient
+  profiles: Profile[]
 }
 
 type Tenent = {
@@ -18,7 +20,6 @@ class EditCommitment extends Nullstack {
 
   commitment: Database['public']['Tables']['commitment']["Row"] = null
   deleted = false
-  loading = false
   error = null
   tenents: Tenent[] = []
   tenent = null
@@ -41,33 +42,23 @@ class EditCommitment extends Nullstack {
   }
 
   async initiate(context: NullstackClientContext<EditCommitmentContext>) {
-    this.loading = true
-    const { data: profile, error: errorProfile } = await context.database
-      .from('profile')
-      .select('tenent (name, id), id')
-      .neq('status', 0)
-      .neq('tenent.status', 0)
-    this.error = errorProfile
-    if (!this.error) {
-      this.tenents = profile.map((item) => item.tenent)
-      const { data: commitment, error: commitmentError } = await context.database
-        .from('commitment')
-        .select('*')
-        .in(
-          'tenent_id',
-          this.tenents.map((item) => item.id),
-        )
-        .eq('id', context.params.slug)
+    this.tenents = context.profiles.map((item) => item.tenent)
+    const { data: commitment, error: commitmentError } = await context.database
+      .from('commitment')
+      .select('*')
+      .in(
+        'tenent_id',
+        this.tenents.map((item) => item.id),
+      )
+      .eq('id', context.params.slug)
 
-      this.error = commitmentError
-      this.commitment = commitment?.[0] ?? null
-      if (this.commitment) {
-        this._setFormValues(this.commitment)
-      } else {
-        context.router.url = '/404'
-      }
+    this.error = commitmentError
+    this.commitment = commitment?.[0] ?? null
+    if (this.commitment) {
+      this._setFormValues(this.commitment)
+    } else {
+      context.router.url = '/404'
     }
-    this.loading = false
   }
 
   async submit({ database }: NullstackClientContext<EditCommitmentContext>) {
@@ -90,7 +81,6 @@ class EditCommitment extends Nullstack {
   }
 
   async delete({ database }: NullstackClientContext<EditCommitmentContext>) {
-    this.loading = true
     const { error } = await database
       .from('commitment')
       .update<Database['public']['Tables']['commitment']['Update']>({
@@ -100,7 +90,6 @@ class EditCommitment extends Nullstack {
 
     this.error = error
     this.deleted = true
-    this.loading = false
   }
 
   update() {

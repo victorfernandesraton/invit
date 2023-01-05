@@ -15,6 +15,8 @@ type ShowBillingContest = {
   database: SupabaseClient
   profiles: Profile[]
 }
+type BillingItemProps = NullstackClientContext<Database['public']['Tables']['billing']['Row']>
+declare function BillingItem(props: BillingItemProps)
 
 class ShowBilling extends Nullstack {
 
@@ -24,38 +26,54 @@ class ShowBilling extends Nullstack {
   limit = 5
   tenents: Tenent[] = []
 
-  async initiate({ database, profiles }: NullstackClientContext<ShowBillingContest>) {
-    console.log('teste')
-    this.tenents = profiles.map((item) => item.tenent)
-    const { data: commitment, error: commitmentError } = await database
-      .from('commitment')
-      .select('*')
+  async initiate(context: NullstackClientContext<ShowBillingContest>) {
+    const { data: profile, error: errorProfile } = await context.database
+      .from('profile')
+      .select('tenent (name, id), id')
+      .neq('status', 0)
+      .neq('tenent.status', 0)
+    this.tenents = profile.map((item) => item.tenent)
+    const { data: billing, error: billingError } = await context.database
+      .from('billing')
+      .select('*, commitment(id, tenent_id)')
       .in(
-        'tenent_id',
+        'commitment.tenent_id',
         this.tenents.map((item) => item.id),
       )
       .neq('status', 0)
-      .order('start_at', {
-        ascending: true,
-      })
-      .order('end_at', {
-        ascending: true,
-        nullsFirst: false,
-      })
+      .eq('commitment.id', context.params.slug)
       .range(this.offset, this.limit)
 
-    this.error = commitmentError
+    this.error = billingError
+    if (!this.error) {
+      this.result = billing
+    }
   }
 
-  render() {
+  renderBillingItem({ price, description }: Database['public']['Tables']['billing']['Row']) {
+    return (
+      <di>
+        <p>{description}</p>
+        <p>
+          Price <span>{price}</span>
+        </p>
+      </di>
+    )
+  }
+
+  render({ params }: NullstackClientContext) {
     if (!this.initiated) {
       return <div>Loading...</div>
     }
 
-    if (!this.result.length && this.initiated) {
-      return <h1>Empty</h1>
-    }
-    return <ShowContainer title="Billing" />
+    return (
+      <ShowContainer title="Billing" createPath={`/commitment/${params.slug}/billing/create`}>
+        {!this.result.length && this.initiated && <h1>Empty</h1>}
+        {this.result.map((item) => (
+          <BillingItem {...{ ...item }} />
+        ))}
+      </ShowContainer>
+    )
   }
 
 }
