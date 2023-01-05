@@ -4,14 +4,25 @@ import { SupabaseClient } from '@supabase/supabase-js'
 
 import '../tailwind.css'
 
+import { Database } from '../lib/database.types'
 import Auth from './auth/index'
 import Commitment from './commitment'
 import Home from './Home'
 import Navbar from './mavbar'
 import { PUBLIC_ROUTES } from './mavbar/constants'
 
+type Tenent = {
+  id: string
+  name: string
+}
+
+export type Profile = Database['public']['Tables']['profile']['Row'] & {
+  tenent?: Tenent
+}
+
 type ApplicationProps = {
   database: SupabaseClient
+  profiles: Profile[]
 }
 
 declare function NotFoundPage(): NullstackNode
@@ -24,8 +35,21 @@ class Application extends Nullstack {
     page.locale = 'en-US'
   }
 
+  async findProfiles(context: NullstackClientContext<ApplicationProps>) {
+    const { data: profile, error: errorProfile } = await context.database
+      .from('profile')
+      .select('*, tenent (name, id)')
+      .neq('status', 0)
+      .neq('tenent.status', 0)
+
+    if (!errorProfile) {
+      context.profiles = profile
+    }
+  }
+
   async initiate() {
     await this.update()
+    await this.findProfiles()
   }
 
   async update(context: NullstackClientContext<ApplicationProps>) {
@@ -57,8 +81,8 @@ class Application extends Nullstack {
       <body class="font-mono">
         {this.logged && <Navbar logout={this.logout} />}
         <Home route="/" />
-        <Auth route="/auth/:slug" />
-        <Commitment route="/commitment/:slug" />
+        <Auth route="/auth/*" />
+        <Commitment route="/commitment/*" />
         <NotFoundPage route="*" />
       </body>
     )

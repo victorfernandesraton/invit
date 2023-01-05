@@ -5,6 +5,7 @@ import { SupabaseClient } from '@supabase/supabase-js'
 import { Database } from '../../lib/database.types'
 import { numToCurrency } from '../../lib/utils/currency'
 import { parseDateToString } from '../../lib/utils/date'
+import ShowContainer from '../components/showContainer'
 
 declare function Item(props: Database['public']['Tables']['commitment']['Row']): NullstackNode
 
@@ -78,8 +79,14 @@ class ShowCommitments extends Nullstack {
           <div class="p-6 flex flex-col flex-1">
             <div class="flex flex-row mb-2 space-x-2">
               <h5 class="text-black text-lg font-medium text-ellipsis	">{title}</h5>
-              <a href={`/commitment/${id}`} class="text-pink-600 font-medium underline underline-offset-1">
+              <a href={`/commitment/${id}`} class="text-pink-600 font-medium text-md underline underline-offset-1">
                 Edit
+              </a>
+              <a
+                href={`/commitment/${id}/billing`}
+                class="text-pink-600 font-medium text-md underline underline-offset-1"
+              >
+                Prices
               </a>
             </div>
 
@@ -126,36 +133,11 @@ class ShowCommitments extends Nullstack {
       return <h1>Empty</h1>
     }
     return (
-      <div class="mt-8 flex align-middle justify-center">
-        <div class="flex flex-col w-5/6 lg:w-2/3">
-          <div class="flex flex-row align-middle justify-between mb-4 w-full">
-            <h3 class="text-black text-xl font-medium">Commitments</h3>
-            <a href="/commitment/create">
-              <button
-                class=" w-20
-              bg-pink-600
-            text-white
-            font-medium
-            text-xs
-            h-8
-            leading-tight
-            uppercase
-            rounded
-            border border-b-4 border-r-4 border-black
-            hover:bg-white hover:text-pink-700 hover:border-pink-700
-            transition
-            duration-150
-            ease-in-out"
-              >
-                Create
-              </button>
-            </a>
-          </div>
-          {this.result.map((item) => (
-            <Item {...{ ...item }} />
-          ))}
-        </div>
-      </div>
+      <ShowContainer title="Commitment">
+        {this.result.map((item) => (
+          <Item {...{ ...item }} />
+        ))}
+      </ShowContainer>
     )
   }
 
