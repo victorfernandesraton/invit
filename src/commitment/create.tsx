@@ -6,6 +6,7 @@ import { Database } from '../../lib/database.types'
 import { parseDateToDefaultString } from '../../lib/utils/date'
 import { getProfilesQuery } from '../profile/query'
 import { getTenentQuery } from '../tenent/query'
+import { CentralFormContainer } from '../components/centralFrom'
 
 type CreateCommitmentContext = {
   database: SupabaseClient
@@ -31,7 +32,7 @@ class CreateCommitment extends Nullstack {
 
   async initiate({ database }: CreateCommitmentContext) {
     try {
-      const profile = await getProfilesQuery(database);
+      const profile = await getProfilesQuery(database)
       this.tenents = await getTenentQuery(database, profile)
     } catch (error) {
       this.error = error
@@ -70,21 +71,19 @@ class CreateCommitment extends Nullstack {
 
   render() {
     return (
-      <div class="mt-12 align-middle flex justify-center h-full">
-        <div class="h-1/3 content-center flex flex-col p-6 rounded-lg bg-amber-100 max-w-md border border-black border-b-4 border-r-4">
-          <h1 class="text-xl md:text-2xl py-2">Create commitment</h1>
-          <form onsubmit={this.submit}>
-            <div class="flex justify-center flex-col">
-              {this.tenents.length > 1 && (
-                <div class="form-group mb-6">
-                  <label for="tenent" class="form-label inline-block mb-2 text-gray-700">
-                    Tenent
-                  </label>
-                  <select
-                    name="tenent"
-                    id="tenent"
-                    bind={this.tenent}
-                    class="form-control
+      <CentralFormContainer title="Create commitment">
+        <form onsubmit={this.submit}>
+          <div class="flex justify-center flex-col">
+            {this.tenents.length > 1 && (
+              <div class="form-group mb-6">
+                <label for="tenent" class="form-label inline-block mb-2 text-gray-700">
+                  Tenent
+                </label>
+                <select
+                  name="tenent"
+                  id="tenent"
+                  bind={this.tenent}
+                  class="form-control
                 block
                 h-11
                 w-full
@@ -100,22 +99,22 @@ class CreateCommitment extends Nullstack {
                 ease-in-out
                 m-0
                 focus:text-gray-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                    required
-                  >
-                    {this.tenents.map((tenetOption) => (
-                      <option value={tenetOption.id}>{tenetOption.name}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
-              <div class="form-group mb-6">
-                <label for="title" class="form-label inline-block mb-2 text-gray-700">
-                  Title
-                </label>
-                <input
-                  id="title"
-                  bind={this.title}
-                  class="form-control
+                  required
+                >
+                  {this.tenents.map((tenetOption) => (
+                    <option value={tenetOption.id}>{tenetOption.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+            <div class="form-group mb-6">
+              <label for="title" class="form-label inline-block mb-2 text-gray-700">
+                Title
+              </label>
+              <input
+                id="title"
+                bind={this.title}
+                class="form-control
               block
               h-11
               w-full
@@ -131,19 +130,19 @@ class CreateCommitment extends Nullstack {
               ease-in-out
               m-0
               focus:text-gray-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                  aria-describedby="titleHelp"
-                  placeholder="Enter title"
-                  required
-                />
-              </div>
-              <div class="form-group mb-6">
-                <label for="description" class="form-label inline-block mb-2 text-gray-700 capitalize">
-                  description
-                </label>
-                <input
-                  id="description"
-                  bind={this.description}
-                  class="form-control
+                aria-describedby="titleHelp"
+                placeholder="Enter title"
+                required
+              />
+            </div>
+            <div class="form-group mb-6">
+              <label for="description" class="form-label inline-block mb-2 text-gray-700 capitalize">
+                description
+              </label>
+              <input
+                id="description"
+                bind={this.description}
+                class="form-control
               block
               h-11
               w-full
@@ -159,24 +158,24 @@ class CreateCommitment extends Nullstack {
               ease-in-out
               m-0
               focus:text-gray-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                  aria-describedby="descriptionHelp"
-                  placeholder="Enter description"
-                  required
-                />
-              </div>
-              <div class="form-group mb-6">
-                <label for="startAt" class="form-label inline-block mb-2 text-gray-700">
-                  Start at
-                </label>
-                <input
-                  aria-describedby="dateHelp"
-                  type="datetime-local"
-                  id="startAt"
-                  name="startAt"
-                  required
-                  min={parseDateToDefaultString(new Date())}
-                  bind={this.startAt}
-                  class="form-control
+                aria-describedby="descriptionHelp"
+                placeholder="Enter description"
+                required
+              />
+            </div>
+            <div class="form-group mb-6">
+              <label for="startAt" class="form-label inline-block mb-2 text-gray-700">
+                Start at
+              </label>
+              <input
+                aria-describedby="dateHelp"
+                type="datetime-local"
+                id="startAt"
+                name="startAt"
+                required
+                min={parseDateToDefaultString(new Date())}
+                bind={this.startAt}
+                class="form-control
                   block
                   h-11
                   w-full
@@ -192,45 +191,45 @@ class CreateCommitment extends Nullstack {
                   ease-in-out
                   m-0
                   focus:text-gray-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                />
-              </div>
-              <div class="flex justify-center form-group mb-6">
-                <div class="form-check form-switch">
-                  <input
-                    bind={this.showEndAt}
-                    class="form-check-input appearance-none w-9 -ml-10 rounded-full float-left h-5 align-top  bg-no-repeat focus:outline-none cursor-pointer
+              />
+            </div>
+            <div class="flex justify-center form-group mb-6">
+              <div class="form-check form-switch">
+                <input
+                  bind={this.showEndAt}
+                  class="form-check-input appearance-none w-9 -ml-10 rounded-full float-left h-5 align-top  bg-no-repeat focus:outline-none cursor-pointer
                     border border-black border-r-2 border-b-2
                     bg-pink-300
                     checked:bg-pink-600
                     checked:border-black
                     "
-                    type="checkbox"
-                    role="switch"
-                    id="enableDateEnd"
-                  />
-                  <label class="form-check-label inline-block text-gray-800" for="enableDateEnd">
-                    Enable date to end commitment
-                  </label>
-                </div>
+                  type="checkbox"
+                  role="switch"
+                  id="enableDateEnd"
+                />
+                <label class="form-check-label inline-block text-gray-800" for="enableDateEnd">
+                  Enable date to end commitment
+                </label>
               </div>
-              {this.showEndAt && (
-                <div class="form-group mb-6">
-                  <label for="endAt" class="form-label inline-block mb-2 text-gray-700">
-                    End at
-                  </label>
-                  <input
-                    bind={this.endAt}
-                    required={this.showEndAt}
-                    min={
-                      this.startAt
-                        ? parseDateToDefaultString(new Date(this.startAt))
-                        : parseDateToDefaultString(new Date())
-                    }
-                    aria-describedby="dateHelp"
-                    type="datetime-local"
-                    id="endAt"
-                    name="endAt"
-                    class="form-control
+            </div>
+            {this.showEndAt && (
+              <div class="form-group mb-6">
+                <label for="endAt" class="form-label inline-block mb-2 text-gray-700">
+                  End at
+                </label>
+                <input
+                  bind={this.endAt}
+                  required={this.showEndAt}
+                  min={
+                    this.startAt
+                      ? parseDateToDefaultString(new Date(this.startAt))
+                      : parseDateToDefaultString(new Date())
+                  }
+                  aria-describedby="dateHelp"
+                  type="datetime-local"
+                  id="endAt"
+                  name="endAt"
+                  class="form-control
                   block
                   h-11
                   w-full
@@ -246,13 +245,13 @@ class CreateCommitment extends Nullstack {
                   ease-in-out
                   m-0
                   focus:text-gray-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                  />
-                </div>
-              )}
-            </div>
-            <button
-              type="submit"
-              class="
+                />
+              </div>
+            )}
+          </div>
+          <button
+            type="submit"
+            class="
             w-full
             px-6
             py-2.5
@@ -269,13 +268,13 @@ class CreateCommitment extends Nullstack {
             transition
             duration-150
             ease-in-out"
-            >
-              Submit
-            </button>
-          </form>
-          {this.error && (
-            <div
-              class="
+          >
+            Submit
+          </button>
+        </form>
+        {this.error && (
+          <div
+            class="
                 py-2.5
                 px-3
                 bg-red-500
@@ -287,13 +286,13 @@ class CreateCommitment extends Nullstack {
             rounded
             border border-b-4 border-r-4 border-black
 "
-            >
-              <p>Error on create commitment</p>
-            </div>
-          )}
-          {this.result && (
-            <div
-              class="
+          >
+            <p>Error on create commitment</p>
+          </div>
+        )}
+        {this.result && (
+          <div
+            class="
                 py-2.5
                 px-3
                 bg-green-500
@@ -305,19 +304,18 @@ class CreateCommitment extends Nullstack {
             rounded
             border border-b-4 border-r-4 border-black
 "
+          >
+            Sucess go to commitment page{' '}
+            <a
+              class="text-pink-600 hover:text-pink-700 hover:underline focus:text-pink-700 transition duration-200 ease-in-out"
+              href={`/commitment/${this.result.id}`}
             >
-              Sucess go to commitment page{' '}
-              <a
-                class="text-pink-600 hover:text-pink-700 hover:underline focus:text-pink-700 transition duration-200 ease-in-out"
-                href={`/commitment/${this.result.id}`}
-              >
-                Here
-              </a>
-              <p />
-            </div>
-          )}
-        </div>
-      </div>
+              Here
+            </a>
+            <p />
+          </div>
+        )}
+      </CentralFormContainer>
     )
   }
 
