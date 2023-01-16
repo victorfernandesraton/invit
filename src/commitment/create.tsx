@@ -4,6 +4,8 @@ import { SupabaseClient } from '@supabase/supabase-js'
 
 import { Database } from '../../lib/database.types'
 import { parseDateToDefaultString } from '../../lib/utils/date'
+import { getProfilesQuery } from '../profile/query'
+import { getTenentQuery } from '../tenent/query'
 
 type CreateCommitmentContext = {
   database: SupabaseClient
@@ -28,14 +30,14 @@ class CreateCommitment extends Nullstack {
   result: Database['public']['Tables']['commitment']['Row'] = null
 
   async initiate({ database }: CreateCommitmentContext) {
-    const { data: profile, error } = await database
-      .from('profile')
-      .select('tenent (name, id), id')
-      .neq('status', 0)
-      .neq('tenent.status', 0)
-    this.error = error
-    this.tenents = Array.from(new Set(profile.map((item) => item.tenent)))
-    if (this.tenents.length == 1) {
+    try {
+      const profile = await getProfilesQuery(database);
+      this.tenents = await getTenentQuery(database, profile)
+    } catch (error) {
+      this.error = error
+    }
+
+    if (this.tenents.length === 1) {
       this.tenent = this.tenents[0].id
     }
   }
