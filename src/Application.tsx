@@ -10,6 +10,8 @@ import Commitment from './commitment'
 import Home from './Home'
 import Navbar from './mavbar'
 import { PUBLIC_ROUTES } from './mavbar/constants'
+import { getProfilesQuery } from './profile/query'
+import Tenent from './tenent'
 
 type Tenent = {
   id: string
@@ -38,15 +40,11 @@ class Application extends Nullstack {
 
   async hydrate(context: NullstackClientContext<ApplicationProps>) {
     if (this.logged) {
-      const { data: profile, error: errorProfile } = await context.database
-        .from('profile')
-        .select('*, tenent (name, id), level')
-        .neq('status', 0)
-        .neq('tenent.status', 0)
-
-      if (!errorProfile) {
-        context.profiles = profile
-        this.profiles = profile;
+      try {
+        this.profiles = await getProfilesQuery(context.database)
+        context.profiles = this.profiles
+      } catch (error) {
+        console.log(error)
       }
     }
   }
@@ -82,10 +80,17 @@ class Application extends Nullstack {
   render() {
     return (
       <body class="font-mono">
-        {this.logged && <Navbar logout={this.logout} isSuperAdmin={this.profiles.find(p => p.level === 0)} />}
+        {this.logged && (
+          <Navbar
+            logout={this.logout}
+            isSuperAdmin={this.profiles.find((p) => p.level === 0)}
+            persistent={this.logged}
+          />
+        )}
         <Home route="/" />
         <Auth route="/auth/*" />
         <Commitment route="/commitment/*" />
+        <Tenent route="/tenent/*" />
         <NotFoundPage route="*" />
       </body>
     )
