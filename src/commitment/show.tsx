@@ -20,7 +20,7 @@ type Tenent = {
 
 class ShowCommitments extends Nullstack {
 
-  limit= 5
+  limit = 5
   offset = 0
   loading = false
   error = null
@@ -38,19 +38,22 @@ class ShowCommitments extends Nullstack {
     this.loading = true
     const { data: profile, error: errorProfile } = await database
       .from('profile')
-      .select('tenent (name, id), id')
+      .select('tenent (name, id), level, id')
       .neq('status', 0)
       .neq('tenent.status', 0)
     this.error = errorProfile
     if (!this.error) {
       this.tenents = profile.map((item) => item.tenent)
-      const { data: commitment, error: commitmentError } = await database
+      const request = database
         .from('commitment')
         .select('*')
-        .in(
+      if (!profile.find(item => !item.tenent && item.level == 0)) {
+        request.in(
           'tenent_id',
           this.tenents.map((item) => item.id),
         )
+      }
+      const { data: commitment, error: commitmentError } = await request
         .neq('status', 0)
         .order('start_at', {
           ascending: true,
@@ -129,11 +132,11 @@ class ShowCommitments extends Nullstack {
       return <div>Loading...</div>
     }
 
-    if (!this.result.length && this.initiated) {
-      return <h1>Empty</h1>
-    }
     return (
       <ShowContainer title="Commitment">
+        {(!this.result.length && this.initiated) && (
+          <h1>Empty</h1>
+        )}
         {this.result.map((item) => (
           <Item {...{ ...item }} />
         ))}

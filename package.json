@@ -14,6 +14,7 @@
     "start": "npx nullstack start",
     "build": "npx nullstack build",
     "migrate:diff": "npx supabase db diff --use-migra -f",
+    "migrate:push": "npx supabase db push",
     "migrate:types": "npx supabase gen types typescript --local > lib/database.types.ts"
   },
   "dependencies": {

@@ -8,7 +8,7 @@ import Application from './src/Application'
 const context = Nullstack.start(Application) as NullstackClientContext
 
 context.start = async function start({ settings }: NullstackClientContext) {
-  const database = createClient<Database>(settings.supabaseApiUrl, settings.supabaseAnonKey, {
+  const database = createClient<Database>(settings.supabaseApiUrl, settings.supabaseRoleKey, {
     db: {
       schema: 'public',
     },

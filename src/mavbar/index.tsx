@@ -1,12 +1,13 @@
 import Nullstack, { NullstackNode } from 'nullstack'
 
 import Dropdown from '../components/dropdown'
-import { PRIVATE_RUTE } from './constants'
+import { ADMIN_ROUTE, PRIVATE_RUTE } from './constants'
 
 type LogoutCallback = () => void
 
 type Props = {
   logout: LogoutCallback
+  isSuperAdmin: boolean
 }
 
 type NavItemProps = {
@@ -167,7 +168,7 @@ class Navbar extends Nullstack<Props> {
     )
   }
 
-  render({ logout }: Props) {
+  render({ logout, isSuperAdmin = false }: Props) {
     return (
       <nav class="relative w-full flex flex-wrap items-center justify-between py-3 bg-white text-gray-500 hover:text-gray-700 focus:text-gray-700 border-black border-2">
         <div class="container-fluid w-full flex  items-center justify-between px-6">
@@ -177,6 +178,13 @@ class Navbar extends Nullstack<Props> {
             </a>
 
             <ul class="hidden md:flex navbar-nav flex-row pl-2 list-style-none self-center">
+              {isSuperAdmin && (
+                <>
+                  {ADMIN_ROUTE.map((item) => (
+                    <NavItem {...{ ...item }} />
+                  ))}
+                </>
+              )}
               {PRIVATE_RUTE.map((item) => (
                 <NavItem {...{ ...item }} />
               ))}

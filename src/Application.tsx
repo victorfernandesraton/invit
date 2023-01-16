@@ -30,6 +30,7 @@ declare function NotFoundPage(): NullstackNode
 class Application extends Nullstack {
 
   logged = false
+  profiles: Profile[] = []
 
   prepare({ page }: NullstackClientContext) {
     page.locale = 'en-US'
@@ -39,12 +40,13 @@ class Application extends Nullstack {
     if (this.logged) {
       const { data: profile, error: errorProfile } = await context.database
         .from('profile')
-        .select('*, tenent (name, id)')
+        .select('*, tenent (name, id), level')
         .neq('status', 0)
         .neq('tenent.status', 0)
 
       if (!errorProfile) {
         context.profiles = profile
+        this.profiles = profile;
       }
     }
   }
@@ -80,7 +82,7 @@ class Application extends Nullstack {
   render() {
     return (
       <body class="font-mono">
-        {this.logged && <Navbar logout={this.logout} />}
+        {this.logged && <Navbar logout={this.logout} isSuperAdmin={this.profiles.find(p => p.level === 0)} />}
         <Home route="/" />
         <Auth route="/auth/*" />
         <Commitment route="/commitment/*" />

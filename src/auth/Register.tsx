@@ -34,17 +34,16 @@ class Register extends Nullstack {
 
   render() {
     return (
-      <main class="mt-48 align-middle flex justify-center">
-        <div class="justify-center p-6 rounded-lg bg-amber-100  border border-black border-b-4 border-r-4 max-w-md">
-          <form>
-            <div class="form-group mb-6">
-              <label for="exampleInput125" class="form-label inline-block mb-2 text-gray-700">
-                Email address
-              </label>
-              <input
-                bind={this.email}
-                type="email"
-                class="form-control block
+      <main class="md:mt-48 mt-16 align-middle flex justify-center">
+        <form class="justify-center p-6 rounded-lg bg-amber-100  border border-black border-b-4 border-r-4 w-4/5 sm:w-2/12">
+          <div class="form-group mb-6">
+            <label for="exampleInput125" class="form-label inline-block mb-2 text-gray-700">
+              Email address
+            </label>
+            <input
+              bind={this.email}
+              type="email"
+              class="form-control block
         w-full
         px-3
         h-11
@@ -59,18 +58,18 @@ class Register extends Nullstack {
         ease-in-out
         m-0
         focus:text-gray-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                id="exampleInput126"
-                placeholder="Enter Email"
-              />
-            </div>
-            <div class="form-group mb-6">
-              <label for="exampleInput125" class="form-label inline-block mb-2 text-gray-700">
-                Passowrd
-              </label>
-              <input
-                bind={this.password}
-                type="password"
-                class="form-control block
+              id="exampleInput126"
+              placeholder="Enter Email"
+            />
+          </div>
+          <div class="form-group mb-6">
+            <label for="exampleInput125" class="form-label inline-block mb-2 text-gray-700">
+              Passowrd
+            </label>
+            <input
+              bind={this.password}
+              type="password"
+              class="form-control block
         w-full
         px-3
         h-11
@@ -85,18 +84,18 @@ class Register extends Nullstack {
         ease-in-out
         m-0
         focus:text-gray-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                id="exampleInput126"
-                placeholder="Enter Password"
-              />
-            </div>
-            <div class="form-group mb-6">
-              <label for="repeat" class="form-label inline-block mb-2 text-gray-700">
-                Repeat Password
-              </label>
-              <input
-                bind={this.repeatPassword}
-                type="password"
-                class="form-control block
+              id="exampleInput126"
+              placeholder="Enter Password"
+            />
+          </div>
+          <div class="form-group mb-6">
+            <label for="repeat" class="form-label inline-block mb-2 text-gray-700">
+              Repeat Password
+            </label>
+            <input
+              bind={this.repeatPassword}
+              type="password"
+              class="form-control block
         w-full
         px-3
         py-1.5
@@ -111,33 +110,35 @@ class Register extends Nullstack {
         ease-in-out
         m-0
         focus:text-gray-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                id="repeat"
-                placeholder="Enter Password Again"
-              />
-            </div>
+              id="repeat"
+              placeholder="Enter Password Again"
+            />
+          </div>
 
-            {this.error && (
-              <div
-                class="
+          {this.error && (
+            <div
+              class="
                 py-2.5
                 px-3
+                mb-6
+                break-all
                 bg-red-500
                 text-white
                 align-middle
                 justify-center
                 text-center
+                flex
             uppercase
             rounded
-            border border-b-4 border-r-4 border-black
-"
-              >
-                <p>{this.error?.error_description ?? this.error?.message}</p>
-              </div>
-            )}
-            <button
-              onclick={this.signup}
-              type="submit"
-              class="
+            border border-b-4 border-r-4 border-black"
+            >
+              <p class="break-all">{this.error?.error_description ?? this.error?.message}</p>
+            </div>
+          )}
+          <button
+            onclick={this.signup}
+            type="submit"
+            class="
       w-full
       px-6
       py-2.5
@@ -153,20 +154,19 @@ class Register extends Nullstack {
       transition
       duration-150
       ease-in-out"
+          >
+            Sign up
+          </button>
+          <p class="text-gray-800 mt-6 text-center">
+            Have account?{' '}
+            <a
+              path="/auth/signin"
+              class="text-pink-600 hover:text-pink-700 hover:underline focus:text-pink-700 transition duration-200 ease-in-out"
             >
-              Sign up
-            </button>
-            <p class="text-gray-800 mt-6 text-center">
-              Have account?{' '}
-              <a
-                path="/auth/signin"
-                class="text-pink-600 hover:text-pink-700 hover:underline focus:text-pink-700 transition duration-200 ease-in-out"
-              >
-                Sign in
-              </a>
-            </p>
-          </form>
-        </div>
+              Sign in
+            </a>
+          </p>
+        </form>
       </main>
     )
   }
