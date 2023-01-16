@@ -13,13 +13,13 @@ import { PUBLIC_ROUTES } from './mavbar/constants'
 import { getProfilesQuery } from './profile/query'
 import Tenent from './tenent'
 
-type Tenent = {
+type TenentType = {
   id: string
   name: string
 }
 
 export type Profile = Database['public']['Tables']['profile']['Row'] & {
-  tenent?: Tenent
+  tenent?: TenentType
 }
 
 type ApplicationProps = {

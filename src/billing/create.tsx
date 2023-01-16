@@ -4,6 +4,7 @@ import { SupabaseClient } from '@supabase/supabase-js'
 
 import { Database } from '../../lib/database.types'
 import { Profile } from '../Application'
+import { CentralFormContainer } from '../components/centralFrom'
 
 type CreateBillingContext = {
   database: SupabaseClient
@@ -17,7 +18,7 @@ type Tenent = {
 
 class CreateBilling extends Nullstack {
 
-  commitment: Database['public']['Tables']['commitment']['Row'] = null
+	commitment: Database['public']['Tables']['commitment']['Row'] = null
   tenents: Tenent[] = []
   error = null
 
@@ -52,9 +53,8 @@ class CreateBilling extends Nullstack {
 
   render() {
     return (
-      <div class="mt-12 align-middle flex justify-center h-full">
-        <div class="h-1/3 content-center flex flex-col p-6 rounded-lg bg-amber-100 max-w-md mx-6 md:mx-0 border border-black border-b-4 border-r-4">
-          <h1 class="text-xl md:text-2xl py-2">Create billing</h1>
+      <section class="flex w-screen h-screen items-center">
+        <CentralFormContainer title="Create Billing">
           <form>
             <div class="flex justify-center flex-col">
               <div class="form-group mb-6">
@@ -163,8 +163,8 @@ class CreateBilling extends Nullstack {
               </div>
             </div>
           </form>
-        </div>
-      </div>
+        </CentralFormContainer>
+      </section>
     )
   }
 
