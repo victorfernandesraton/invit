@@ -6,6 +6,7 @@ import { Database } from '../../lib/database.types'
 import { numToCurrency } from '../../lib/utils/currency'
 import { parseDateToString } from '../../lib/utils/date'
 import ShowContainer from '../components/showContainer'
+import { getProfilesQuery } from '../profile/query'
 
 declare function Item(props: Database['public']['Tables']['commitment']['Row']): NullstackNode
 
@@ -20,7 +21,7 @@ type Tenent = {
 
 class ShowCommitments extends Nullstack {
 
-  limit = 5
+	limit = 5
   offset = 0
   loading = false
   error = null
@@ -36,36 +37,33 @@ class ShowCommitments extends Nullstack {
 
   async initiate({ database }: NullstackClientContext<ShowCommitmentsContext>) {
     this.loading = true
-    const { data: profile, error: errorProfile } = await database
-      .from('profile')
-      .select('tenent (name, id), level, id')
-      .neq('status', 0)
-      .neq('tenent.status', 0)
-    this.error = errorProfile
-    if (!this.error) {
-      this.tenents = profile.map((item) => item.tenent)
-      const request = database
-        .from('commitment')
-        .select('*')
-      if (!profile.find(item => !item.tenent && item.level == 0)) {
-        request.in(
-          'tenent_id',
-          this.tenents.map((item) => item.id),
-        )
-      }
-      const { data: commitment, error: commitmentError } = await request
-        .neq('status', 0)
-        .order('start_at', {
-          ascending: true,
-        })
-        .order('end_at', {
-          ascending: true,
-          nullsFirst: false,
-        })
-        .range(this.offset, this.limit)
+    try {
+      const profile = await getProfilesQuery(database)
+      if (!this.error) {
+        this.tenents = profile.map((item) => item.tenent)
+        const request = database.from('commitment').select('*')
+        if (!profile.find((item) => !item.tenent && item.level == 0)) {
+          request.in(
+            'tenent_id',
+            this.tenents.map((item) => item.id),
+          )
+        }
+        const { data: commitment, error: commitmentError } = await request
+          .neq('status', 0)
+          .order('start_at', {
+            ascending: true,
+          })
+          .order('end_at', {
+            ascending: true,
+            nullsFirst: false,
+          })
+          .range(this.offset, this.limit)
 
-      this.result = commitment
-      this.error = commitmentError
+        this.result = commitment
+        this.error = commitmentError
+      }
+    } catch (error) {
+      this.error = error
     }
   }
 
@@ -134,9 +132,7 @@ class ShowCommitments extends Nullstack {
 
     return (
       <ShowContainer title="Commitment">
-        {(!this.result.length && this.initiated) && (
-          <h1>Empty</h1>
-        )}
+        {!this.result.length && this.initiated && <h1>Empty</h1>}
         {this.result.map((item) => (
           <Item {...{ ...item }} />
         ))}

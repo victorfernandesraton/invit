@@ -3,6 +3,7 @@ import Nullstack, { NullstackClientContext } from 'nullstack'
 import { SupabaseClient } from '@supabase/supabase-js'
 
 import { Database } from '../../lib/database.types'
+import { numToCurrency, numToCurrencyString } from '../../lib/utils/currency'
 import { Profile } from '../Application'
 import ShowContainer from '../components/showContainer'
 import { getProfilesQuery } from '../profile/query'
@@ -54,14 +55,61 @@ class ShowBilling extends Nullstack {
     }
   }
 
-  renderBillingItem({ price, description }: Database['public']['Tables']['billing']['Row']) {
+  renderBillingItem({
+    price,
+    description,
+    currency,
+    commitment_id,
+    id,
+  }: Database['public']['Tables']['billing']['Row']) {
     return (
-      <di>
-        <p>{description}</p>
-        <p>
-          Price <span>{price}</span>
-        </p>
-      </di>
+      <div class="mb-4 flex flex-col md:flex-row justify-between rounded-lg bg-white border border-black border-b-4 border-r-4">
+        <div class="p-6 flex flex-col">
+          <div class="flex flex-row mb-2 justify-between">
+            <p class="text-black text-xl font-medium text-ellipsis	">{description}</p>
+          </div>
+
+          <div class="flex">
+            <p class="text-lg">
+              Price{' '}
+              <span class="text-pink-700">
+                {numToCurrencyString(price, currency)} {currency}
+              </span>
+            </p>
+          </div>
+					<div class='flex space-x-6'>
+            <a
+              href={`/commitment/${commitment_id}/billing/${id}`}
+              class="text-pink-600 font-medium text-md underline underline-offset-1"
+            >
+              Edit
+            </a>
+            <a
+              href={`/commitment/${commitment_id}/ticket?billing=${id}`}
+              class="text-pink-600 font-medium text-md underline underline-offset-1"
+            >
+              Tickets
+            </a>
+					</div>
+        </div>
+        <div class="p-6 py-2 md:py-6 mb-6 md:mb-0 flex flex-col space-y-4 md:space-y-0 md:flex-row md:space-x-4">
+          <div class="flex flex-col  space-y-2">
+            <p class="md:text-sm">Avaliable invites</p>
+            <div class="w-full bg-gray-200 rounded-full">
+              <div
+                class="bg-pink-600 text-xs font-medium text-blue-100 text-center md:p-0.5 p-0.25 leading-none rounded-l-full border-2 border-black border-b-4 border-r-4"
+                style={`width: ${(5 / 10) * 100}%`}
+              >
+                <p class="text-white">2/10</p>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col">
+            <p class="md:text-sm">Ammount total</p>
+            <h5 class="text-pink-700 text-lg">{numToCurrency(200.5)} {currency}</h5>
+          </div>
+        </div>
+      </div>
     )
   }
 
