@@ -12,7 +12,7 @@ class Commitment extends Nullstack {
       <main>
         <ShowCommitments route="/commitment" />
         <CreateCommitment route="/commitment/create" />
-        <EditCommitment route="/commitment/:slug" />
+        <EditCommitment type="Edit" route="/commitment/:slug" />
         <Billing route="/commitment/:slug/billing/*" />
       </main>
     )
