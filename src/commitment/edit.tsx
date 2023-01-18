@@ -29,6 +29,7 @@ class EditCommitment extends Nullstack {
   loadingSubmit = false
   showEndAt = null
   title = null
+  currency = null
   description = null
   startAt: Date = null
   endAt: Date = null
@@ -42,6 +43,7 @@ class EditCommitment extends Nullstack {
     this.endAt = new Date(commitment?.end_at)
     this.tenent = this.tenents.find((t) => t.id === commitment.tenent_id)
     this.deleted = commitment.status === 0
+    this.currency = commitment.currency ?? 'BRL'
   }
 
   async initiate(context: NullstackClientContext<EditCommitmentContext>) {
@@ -289,6 +291,37 @@ class EditCommitment extends Nullstack {
                   />
                 </div>
               )}
+              <div class="form-group mb-6">
+                <label for="currency" class="form-label inline-block mb-2 text-gray-700 capitalize">
+                  Currency
+                </label>
+                <div class="flex flex-row form-group">
+                  <select
+										required
+                    bind={this.currency}
+                    class="form-select form-select-lg mb-3
+      appearance-none
+      block
+			w-full
+      px-3
+      py-1.5
+      text-xl
+      font-normal
+      text-gray-700
+      bg-white bg-clip-padding bg-no-repeat
+      border border-b-4 border-r-4 border-black
+      rounded
+      transition
+      ease-in-out
+      m-0
+      focus:text-gray-700 focus:bg-white focus:border-pink-600 focus:outline-none"
+                    aria-label=".form-select-lg example"
+                  >
+                    <option value="BRL">BRL</option>
+                    <option value="USD">USD</option>
+                  </select>
+                </div>
+              </div>
             </div>
             <button
               type="submit"

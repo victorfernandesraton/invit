@@ -73,6 +73,7 @@ class ShowCommitments extends Nullstack {
     description,
     start_at,
     end_at,
+    currency,
   }: NullstackClientContext<Database['public']['Tables']['commitment']['Row']>) {
     return (
       <div class="flex flex-col md:flex-row  rounded-lg bg-white border border-black border-b-4 border-r-4">
@@ -117,7 +118,9 @@ class ShowCommitments extends Nullstack {
             </div>
             <div class="flex flex-col space-y-2">
               <p class="md:text-sm">Ammount total</p>
-              <h5 class="text-pink-700 lg:text-xl md:text-md text-xs">{numToCurrency(200.5)} R$</h5>
+              <h5 class="text-pink-700 lg:text-xl md:text-md text-xs">
+                {numToCurrency(200.5)} {currency}
+              </h5>
             </div>
           </div>
         </div>

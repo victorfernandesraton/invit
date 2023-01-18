@@ -27,6 +27,7 @@ class CreateCommitment extends Nullstack {
   description = null
   startAt = null
   endAt = null
+  currency = 'BRL'
   error = null
   result: Database['public']['Tables']['commitment']['Row'] = null
 
@@ -60,6 +61,7 @@ class CreateCommitment extends Nullstack {
           description: this.description,
           end_at: this.endAt?.toString?.() ?? null,
           tenent_id: this.tenent,
+          currency: this.currency,
         },
       ])
       .select('*')
@@ -249,6 +251,36 @@ class CreateCommitment extends Nullstack {
                   />
                 </div>
               )}
+              <div class="form-group mb-6">
+                <label for="currency" class="form-label inline-block mb-2 text-gray-700 capitalize">
+                  Currency
+                </label>
+                <div class="flex flex-row form-group">
+                  <select
+                    bind={this.currency}
+                    class="form-select form-select-lg mb-3
+      appearance-none
+      block
+			w-full
+      px-3
+      py-1.5
+      text-xl
+      font-normal
+      text-gray-700
+      bg-white bg-clip-padding bg-no-repeat
+      border border-b-4 border-r-4 border-black
+      rounded
+      transition
+      ease-in-out
+      m-0
+      focus:text-gray-700 focus:bg-white focus:border-pink-600 focus:outline-none"
+                    aria-label=".form-select-lg example"
+                  >
+                    <option value="BRL">BRL</option>
+                    <option value="USD">USD</option>
+                  </select>
+                </div>
+              </div>
             </div>
             <button
               type="submit"

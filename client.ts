@@ -1,13 +1,17 @@
 import Nullstack, { NullstackClientContext } from 'nullstack'
 
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
 import { Database } from './lib/database.types'
 import Application from './src/Application'
 
-const context = Nullstack.start(Application) as NullstackClientContext
+type ClientContext = {
+  database: SupabaseClient
+}
 
-context.start = async function start({ settings }: NullstackClientContext) {
+const context = Nullstack.start(Application) as NullstackClientContext<ClientContext>
+
+context.start = async function start({ settings }: NullstackClientContext<ClientContext>) {
   const database = createClient<Database>(settings.supabaseApiUrl, settings.supabaseRoleKey, {
     db: {
       schema: 'public',

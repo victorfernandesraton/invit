@@ -56,7 +56,6 @@ class CreateBilling extends Nullstack {
       .insert<Database['public']['Tables']['billing']['Insert']>({
         commitment_id: this.commitment.id,
         description: this.description,
-        currency: this.currency,
         price: this.price,
         remote: this.remote,
       })
@@ -105,34 +104,9 @@ class CreateBilling extends Nullstack {
                 Currency
               </label>
               <div class="flex flex-row form-group">
-                <input
-                  id="currency"
-                  name="currency"
-                  bind={this.price}
-                  class="form-control
-             block
-             h-11
-             w-full
-             px-3
-             py-1.5
-             text-base
-             font-normal
-             text-gray-700
-             bg-white bg-clip-padding
-              border border-b-4 border-r-4 border-black
-             rounded
-             transition
-             ease-in-out
-             m-0
-             focus:text-gray-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                  placeholder="Enter currency value"
-                  required
-                  type="number"
-                  step="0.01"
-                  min="0.01"
-                />
                 <select
-                  bind={this.currency}
+                  disabled
+                  value={this.commitment.currency}
                   class="form-select form-select-lg mb-3
       appearance-none
       block

@@ -18,12 +18,20 @@ type ShowBillingContest = {
   database: SupabaseClient
   profiles: Profile[]
 }
-type BillingItemProps = NullstackClientContext<Database['public']['Tables']['billing']['Row']>
+type BillingItemType = Database['public']['Tables']['billing']['Row'] & {
+  commitment: {
+    name
+    id
+    currency
+  }
+}
+type BillingItemProps = NullstackClientContext<BillingItemType>
+
 declare function BillingItem(props: BillingItemProps)
 
 class ShowBilling extends Nullstack {
 
-	result: Database['public']['Tables']['billing']['Row'][] = []
+	result: BillingItemType[] = []
   error: Error = null
   offset = 0
   limit = 5
@@ -37,7 +45,7 @@ class ShowBilling extends Nullstack {
 
       const { data: billing, error: billingError } = await context.database
         .from('billing')
-        .select('*, commitment(id, tenent_id)')
+        .select('*, commitment(id, tenent_id, currency)')
         .in(
           'commitment.tenent_id',
           this.tenents.map((item) => item.id),
@@ -45,6 +53,7 @@ class ShowBilling extends Nullstack {
         .neq('status', 0)
         .eq('commitment.id', context.params.slug)
         .range(this.offset, this.limit)
+
 
       this.error = billingError
       if (!this.error) {
@@ -55,13 +64,7 @@ class ShowBilling extends Nullstack {
     }
   }
 
-  renderBillingItem({
-    price,
-    description,
-    currency,
-    commitment_id,
-    id,
-  }: Database['public']['Tables']['billing']['Row']) {
+  renderBillingItem({ price, description, commitment, id }: BillingItemType) {
     return (
       <div class="mb-4 flex flex-col md:flex-row justify-between rounded-lg bg-white border border-black border-b-4 border-r-4">
         <div class="p-6 flex flex-col">
@@ -73,24 +76,24 @@ class ShowBilling extends Nullstack {
             <p class="text-lg">
               Price{' '}
               <span class="text-pink-700">
-                {numToCurrencyString(price, currency)} {currency}
+                {numToCurrencyString(price, commitment.currency)} {commitment.currency}
               </span>
             </p>
           </div>
-					<div class='flex space-x-6'>
+          <div class="flex space-x-6">
             <a
-              href={`/commitment/${commitment_id}/billing/${id}`}
+              href={`/commitment/${commitment.id}/billing/${id}`}
               class="text-pink-600 font-medium text-md underline underline-offset-1"
             >
               Edit
             </a>
             <a
-              href={`/commitment/${commitment_id}/ticket?billing=${id}`}
+              href={`/commitment/${commitment.id}/ticket?billing=${id}`}
               class="text-pink-600 font-medium text-md underline underline-offset-1"
             >
               Tickets
             </a>
-					</div>
+          </div>
         </div>
         <div class="p-6 py-2 md:py-6 mb-6 md:mb-0 flex flex-col space-y-4 md:space-y-0 md:flex-row md:space-x-4">
           <div class="flex flex-col  space-y-2">
@@ -106,7 +109,9 @@ class ShowBilling extends Nullstack {
           </div>
           <div class="flex flex-col">
             <p class="md:text-sm">Ammount total</p>
-            <h5 class="text-pink-700 text-lg">{numToCurrency(200.5)} {currency}</h5>
+            <h5 class="text-pink-700 text-lg">
+              {numToCurrency(200.5)} {commitment.currency}
+            </h5>
           </div>
         </div>
       </div>

@@ -38,6 +38,7 @@ class Application extends Nullstack {
     page.locale = 'en-US'
   }
 
+
   async hydrate(context: NullstackClientContext<ApplicationProps>) {
     if (this.logged) {
       try {
@@ -51,6 +52,7 @@ class Application extends Nullstack {
 
   async initiate() {
     await this.update()
+
   }
 
   async update(context: NullstackClientContext<ApplicationProps>) {
