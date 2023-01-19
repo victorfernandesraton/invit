@@ -76,7 +76,7 @@ class ShowBilling extends Nullstack {
             <p class="text-lg">
               Price{' '}
               <span class="text-pink-700">
-                {numToCurrencyString(price, commitment.currency)} {commitment.currency}
+                {numToCurrencyString(price / 100, commitment.currency)} {commitment.currency}
               </span>
             </p>
           </div>
