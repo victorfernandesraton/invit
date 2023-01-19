@@ -22,7 +22,7 @@ export abstract class QueryStorage<P, R> {
   }
 
   private isBigger(passedTime: number) {
-    return passedTime + this.minutesCached * 60 * 60 > new Date().getTime()
+    return passedTime + this.minutesCached * (60 * 1000) > new Date().getTime()
   }
 
   protected setStorageData(value: R) {

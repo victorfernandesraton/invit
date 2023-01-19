@@ -45,7 +45,7 @@ class ShowBilling extends Nullstack {
 
       const { data: billing, error: billingError } = await context.database
         .from('billing')
-        .select('*, commitment(id, tenent_id, currency)')
+        .select('* , commitment (currency)')
         .in(
           'commitment.tenent_id',
           this.tenents.map((item) => item.id),
@@ -53,7 +53,6 @@ class ShowBilling extends Nullstack {
         .neq('status', 0)
         .eq('commitment.id', context.params.slug)
         .range(this.offset, this.limit)
-
 
       this.error = billingError
       if (!this.error) {
@@ -127,7 +126,7 @@ class ShowBilling extends Nullstack {
       <ShowContainer title="Billing" createPath={`/commitment/${params.slug}/billing/create`}>
         {!this.result.length && this.initiated && <h1>Empty</h1>}
         {this.result.map((item) => (
-          <BillingItem {...{ ...item }} />
+          <BillingItem {...{ ...item }} commitment={item.commitment} />
         ))}
       </ShowContainer>
     )

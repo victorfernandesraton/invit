@@ -11,7 +11,7 @@ export async function getTenentQuery(
   if (!profiles.find((profile) => profile.level === 0)) {
     request.in(
       'id',
-      profiles.filter((item) => item?.tenent_id && item.level < 2).map((item) => item.tenent_id),
+      profiles.filter((item) => item?.tenent_id).map((item) => item.tenent_id),
     )
   }
 

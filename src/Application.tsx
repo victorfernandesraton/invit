@@ -43,7 +43,6 @@ class Application extends Nullstack {
     if (this.logged) {
       try {
         this.profiles = await getProfilesQuery(context.database)
-        context.profiles = this.profiles
       } catch (error) {
         console.log(error)
       }
@@ -80,6 +79,7 @@ class Application extends Nullstack {
   }
 
   render() {
+		console.log(this.profiles.find(p => p.level === 0))
     return (
       <body class="font-mono">
         {this.logged && (

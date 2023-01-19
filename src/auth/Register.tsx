@@ -1,4 +1,4 @@
-import Nullstack from 'nullstack'
+import Nullstack, { NullstackClientContext } from 'nullstack'
 
 import { SupabaseClient } from '@supabase/supabase-js'
 
@@ -21,10 +21,10 @@ class Register extends Nullstack {
     }
   }
 
-  async signup({ database }: { database: SupabaseClient }) {
+  async signup(context: NullstackClientContext<{ database: SupabaseClient }>) {
     this.validate()
     this.loadingLogin = true
-    const { error } = await database.auth.signUp({
+    const { error } = await context.database.auth.signUp({
       email: this.email,
       password: this.password,
     })
@@ -32,6 +32,7 @@ class Register extends Nullstack {
     if (error) {
       this.error = error
     }
+		context.router.url = "/"
   }
 
   render() {
