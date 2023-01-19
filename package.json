@@ -16,9 +16,9 @@
     "migrate:diff": "npx supabase db diff --use-migra -f",
     "migrate:push": "npx supabase db push",
     "migrate:types": "npx supabase gen types typescript --local > lib/database.types.ts",
-		"status": "npx supabase status",
+		"db:status": "npx supabase status",
 		"db:start": "npx supabase start",
-		"db:stop": "npx supabase stop"
+		"db:stop": "npx supabase stop --backup"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.2.3",

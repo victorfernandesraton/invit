@@ -42,7 +42,7 @@ class ShowCommitments extends Nullstack {
       if (!this.error) {
         this.tenents = profile.map((item) => item.tenent)
         const request = database.from('commitment').select('*')
-        if (!profile.find((item) => !item.tenent && item.level == 0)) {
+        if (!profile.find((item) => !item.tenent && item.level === 0)) {
           request.in(
             'tenent_id',
             this.tenents.map((item) => item.id),

@@ -1,14 +1,11 @@
-import { NullstackClientContext } from 'nullstack'
+import { NullstackNode } from 'nullstack'
 
 type Props = {
   title: string
   createPath?: string
+  children?: NullstackNode
 }
-export default function ShowContainer({
-  children,
-  title,
-  createPath = '/commitment/create',
-}: NullstackClientContext<Props>) {
+export default function ShowContainer({ children, title, createPath = '/commitment/create' }: Props) {
   return (
     <div class="mt-8 flex align-middle justify-center">
       <div class="flex flex-col w-5/6 lg:w-2/3">

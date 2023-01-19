@@ -1,8 +1,5 @@
-import Nullstack, { NullstackClientContext } from 'nullstack'
+import Nullstack from 'nullstack'
 
-import { SupabaseClient } from '@supabase/supabase-js'
-
-import { getProfilesQuery } from '../profile/query'
 import ShowTenent from './show'
 
 class Tenent extends Nullstack {

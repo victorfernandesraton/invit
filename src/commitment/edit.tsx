@@ -22,8 +22,8 @@ class EditCommitment extends CommitmentForm {
     const start_at = new Date(commitment.start_at)
     this.startAt = new Date(start_at).toISOString().substr(0, start_at.toISOString().indexOf('.'))
     this.showEndAt = commitment?.end_at ?? false
-		if (commitment.end_at) {
-			const end_at = new Date(commitment.end_at)
+    if (commitment.end_at) {
+      const end_at = new Date(commitment.end_at)
       this.endAt = new Date(end_at).toISOString().substr(0, end_at.toISOString().indexOf('.'))
     }
 
@@ -42,9 +42,9 @@ class EditCommitment extends CommitmentForm {
         profiles,
       })
       this._setFormValues(this.commitment)
-			if (!this.commitment) {
+      if (!this.commitment) {
         context.router.url = '/404'
-			}
+      }
     } catch (error) {
       if (error.message === 'not found') {
         context.router.url = '/404'

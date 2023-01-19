@@ -1,11 +1,10 @@
-import Nullstack, { NullstackClientContext } from 'nullstack'
+import { NullstackClientContext } from 'nullstack'
 
 import { SupabaseClient } from '@supabase/supabase-js'
 
 import { Database } from '../../lib/database.types'
 import { Profile } from '../Application'
 import { getCommitmentById } from '../commitment/query'
-import { CentralFormContainer } from '../components/centralFrom'
 import { getProfilesQuery } from '../profile/query'
 import BillingForm from './form'
 
@@ -51,13 +50,13 @@ class CreateBilling extends BillingForm {
     }
   }
 
-  async submit({ database }: CreateBillingContext) {
+  async submit({ database }: NullstackClientContext<CreateBillingContext>) {
     const { data, error } = await database
       .from('billing')
       .insert<Database['public']['Tables']['billing']['Insert']>({
         commitment_id: this.commitment.id,
         description: this.description,
-        price: this.price,
+        price: this.price * 100,
         remote: this.remote,
       })
       .select('*')

@@ -2,9 +2,8 @@ import Nullstack, { NullstackClientContext } from 'nullstack'
 
 class Home extends Nullstack {
 
-  prepare({ project, page, greeting }: NullstackClientContext) {
-    page.title = `${project.name} - ${greeting}`
-    page.description = `${project.name} was made with Nullstack`
+  prepare(context: NullstackClientContext) {
+    context.page.title = "Invit - Home"
   }
 
   render() {

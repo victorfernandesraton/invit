@@ -2,15 +2,17 @@ import Nullstack from 'nullstack'
 
 import ShowBilling from '../billing/show'
 import CreateBilling from './create'
+import EditBilling from './edit'
 
 class Billing extends Nullstack {
 
   render() {
     return (
-      <main>
+      <>
         <ShowBilling route="/commitment/:slug/billing" />
         <CreateBilling route="/commitment/:slug/billing/create" />
-      </main>
+        <EditBilling type="Edit" route="/commitment/:commitmentId/billing/:billingId" />
+      </>
     )
   }
 

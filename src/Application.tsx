@@ -1,6 +1,6 @@
 import Nullstack, { NullstackClientContext, NullstackNode } from 'nullstack'
 
-import { SupabaseClient } from '@supabase/supabase-js'
+import { PostgrestError, SupabaseClient } from '@supabase/supabase-js'
 
 import '../tailwind.css'
 
@@ -10,6 +10,7 @@ import Commitment from './commitment'
 import Home from './Home'
 import Navbar from './mavbar'
 import { PUBLIC_ROUTES } from './mavbar/constants'
+import NotFound from './NotFound'
 import { getProfilesQuery } from './profile/query'
 import Tenent from './tenent'
 
@@ -27,73 +28,71 @@ type ApplicationProps = {
   profiles: Profile[]
 }
 
-declare function NotFoundPage(): NullstackNode
+declare function Error(props: { error: PostgrestError | Error }): NullstackNode
 
 class Application extends Nullstack {
 
-  logged = false
+	logged = false
   profiles: Profile[] = []
+  error = null
 
-  prepare({ page }: NullstackClientContext) {
-    page.locale = 'en-US'
+  prepare(context: NullstackClientContext) {
+    context.page.locale = 'en-US'
+    context.page.changes = 'hourly'
+    context.page.title = 'Invit'
   }
-
 
   async hydrate(context: NullstackClientContext<ApplicationProps>) {
     if (this.logged) {
+      this.profiles = await getProfilesQuery(context.database)
       try {
-        this.profiles = await getProfilesQuery(context.database)
       } catch (error) {
-        console.log(error)
+        this.error = error
+        context.router.url = '/error'
       }
     }
-  }
-
-  async initiate() {
-    await this.update()
-
+    if (!PUBLIC_ROUTES.includes(context.router.path)) {
+      if (!this.logged) {
+        context.router.url = '/auth'
+      }
+    }
   }
 
   async update(context: NullstackClientContext<ApplicationProps>) {
-    if (!PUBLIC_ROUTES.includes(context.router.path)) {
-      const { data } = await context.database.auth.getSession()
-      this.logged = data?.session?.user?.id
-      if (!this.logged) {
-        context.router.path = '/auth'
-      }
-    }
+    const { data } = await context.database.auth.getSession()
+    this.logged = !!data?.session?.user?.id
   }
 
   async logout(context: NullstackClientContext<ApplicationProps>) {
     await context.database.auth.signOut()
     this.logged = false
+    localStorage.removeItem('profiles')
     context.router.path = '/auth'
   }
 
-  renderNotFoundPage(): NullstackNode {
-    return (
-      <div>
-        <h1>Not found</h1>
-      </div>
-    )
+  renderError({ error }: NullstackClientContext<{ error: Error | PostgrestError }>) {
+    return <h1>{error?.message}</h1>
   }
 
   render() {
-		console.log(this.profiles.find(p => p.level === 0))
     return (
       <body class="font-mono">
         {this.logged && (
           <Navbar
             logout={this.logout}
             isSuperAdmin={this.profiles.find((p) => p.level === 0)}
+            isManager={this.profiles.find((p) => p.level === 0 || p.tenent_id)}
             persistent={this.logged}
           />
         )}
-        <Home route="/" />
-        <Auth route="/auth/*" />
-        <Commitment route="/commitment/*" />
-        <Tenent route="/tenent/*" />
-        <NotFoundPage route="*" />
+        <main>
+          <Home route="/" />
+          <Auth route="/auth/*" />
+          <Commitment route="/commitment/*" />
+          <Tenent route="/tenent/*" />
+          <Error route="/error" error={this.error} />
+          <NotFound route="*" />
+        </main>
       </body>
     )
   }

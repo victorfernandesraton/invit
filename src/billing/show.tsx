@@ -1,6 +1,6 @@
-import Nullstack, { NullstackClientContext } from 'nullstack'
+import Nullstack, { NullstackClientContext, NullstackNode } from 'nullstack'
 
-import { SupabaseClient } from '@supabase/supabase-js'
+import { PostgrestError, SupabaseClient } from '@supabase/supabase-js'
 
 import { Database } from '../../lib/database.types'
 import { numToCurrency, numToCurrencyString } from '../../lib/utils/currency'
@@ -25,14 +25,13 @@ type BillingItemType = Database['public']['Tables']['billing']['Row'] & {
     currency
   }
 }
-type BillingItemProps = NullstackClientContext<BillingItemType>
 
-declare function BillingItem(props: BillingItemProps)
+declare function BillingItem(props: BillingItemType): NullstackNode
 
 class ShowBilling extends Nullstack {
 
 	result: BillingItemType[] = []
-  error: Error = null
+  error: Error | PostgrestError = null
   offset = 0
   limit = 5
   tenents: Tenent[] = []
@@ -45,7 +44,7 @@ class ShowBilling extends Nullstack {
 
       const { data: billing, error: billingError } = await context.database
         .from('billing')
-        .select('* , commitment (currency)')
+        .select('* , commitment (currency, id)')
         .in(
           'commitment.tenent_id',
           this.tenents.map((item) => item.id),
@@ -63,12 +62,14 @@ class ShowBilling extends Nullstack {
     }
   }
 
-  renderBillingItem({ price, description, commitment, id }: BillingItemType) {
+  renderBillingItem({ price, description, commitment, id, remote }: NullstackClientContext<BillingItemType>) {
     return (
       <div class="mb-4 flex flex-col md:flex-row justify-between rounded-lg bg-white border border-black border-b-4 border-r-4">
         <div class="p-6 flex flex-col">
           <div class="flex flex-row mb-2 justify-between">
             <p class="text-black text-xl font-medium text-ellipsis	">{description}</p>
+
+            {remote && <span>Remote</span>}
           </div>
 
           <div class="flex">

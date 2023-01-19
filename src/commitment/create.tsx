@@ -14,7 +14,7 @@ type CreateCommitmentContext = {
 class CreateCommitment extends CommitmentForm {
 
 
-	async initiate({ database }: CreateCommitmentContext) {
+	async initiate({ database }: NullstackClientContext<CreateCommitmentContext>) {
     try {
       const profile = await getProfilesQuery(database)
       this.tenents = await getTenentQuery(database, profile)

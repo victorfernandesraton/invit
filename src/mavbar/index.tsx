@@ -1,4 +1,4 @@
-import Nullstack, { NullstackNode } from 'nullstack'
+import Nullstack, { NullstackClientContext, NullstackNode } from 'nullstack'
 
 import Dropdown from '../components/dropdown'
 import { ADMIN_ROUTE, PRIVATE_RUTE } from './constants'
@@ -8,6 +8,7 @@ type LogoutCallback = () => void
 type Props = {
   logout: LogoutCallback
   isSuperAdmin: boolean
+  isManager: boolean
 }
 
 type NavItemProps = {
@@ -17,12 +18,12 @@ type NavItemProps = {
 }
 
 declare function NavItem(props: NavItemProps): NullstackNode
-declare function SideMenu(props: Props): NullstackNode
+declare function SideMenu(props: { logout: LogoutCallback }): NullstackNode
 declare function MobileMenu(): NullstackNode
 
-class Navbar extends Nullstack<Props> {
+class Navbar extends Nullstack {
 
-  toggle = false
+	toggle = false
   toggleTenent = false
 
   changeToggle() {
@@ -33,17 +34,17 @@ class Navbar extends Nullstack<Props> {
     this.toggleTenent = !this.toggleTenent
   }
 
-  renderNavItem({ current = false, url, title }: NavItemProps) {
+  renderNavItem({ url, title }: NavItemProps) {
     return (
       <li class="nav-item px-2">
-        <a class="nav-link text-black p-0" href={url} aria-current={current ? 'page' : 'none'}>
+        <a class="nav-link text-black p-0" href={url}>
           {title}
         </a>
       </li>
     )
   }
 
-  renderSideMenu({ logout }: Props) {
+  renderSideMenu({ logout }: { logout: LogoutCallback }) {
     return (
       <div class="dropdown relative ml-2">
         <button
@@ -168,14 +169,18 @@ class Navbar extends Nullstack<Props> {
     )
   }
 
-  render({ logout, isSuperAdmin = false }: Props) {
+  render({ logout, isSuperAdmin = false, isManager = false }: NullstackClientContext<Props>) {
     return (
       <nav class="relative w-full flex flex-wrap items-center justify-between py-3 bg-white text-gray-500 hover:text-gray-700 focus:text-gray-700 border-black border-2">
         <div class="container-fluid w-full flex  items-center justify-between px-6">
-          <div class="container-fluid flex w-full">
+          <div class="container-fluid flex w-full gap-2">
             <a href="/" class="text-xl text-black self-center uppercase">
               Invite
             </a>
+
+            <div class="flex">
+              <MobileMenu />
+            </div>
 
             <ul class="hidden md:flex navbar-nav flex-row pl-2 list-style-none self-center">
               {isSuperAdmin && (
@@ -185,13 +190,16 @@ class Navbar extends Nullstack<Props> {
                   ))}
                 </>
               )}
-              {PRIVATE_RUTE.map((item) => (
-                <NavItem {...{ ...item }} />
-              ))}
+              {isManager && (
+                <>
+                  {PRIVATE_RUTE.map((item) => (
+                    <NavItem {...{ ...item }} />
+                  ))}
+                </>
+              )}
             </ul>
 
             <div class="flex items-center justify-end align-bottom self-center w-full">
-              <MobileMenu />
               <SideMenu logout={logout} />
             </div>
           </div>
