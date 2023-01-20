@@ -2,8 +2,8 @@ import Nullstack, { NullstackClientContext } from 'nullstack'
 
 import { SupabaseClient } from '@supabase/supabase-js'
 
-import { Database } from '../../lib/database.types'
-import ShowContainer from '../components/showContainer'
+import { Database } from '../../../lib/database.types'
+import ShowContainer from '../../components/showContainer'
 import { getProfilesQuery } from '../profile/query'
 import { getTenentQuery } from './query'
 

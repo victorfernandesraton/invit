@@ -2,10 +2,10 @@ import Nullstack, { NullstackClientContext, NullstackNode } from 'nullstack'
 
 import { PostgrestError, SupabaseClient } from '@supabase/supabase-js'
 
-import { Database } from '../../lib/database.types'
-import { numToCurrency, numToCurrencyString } from '../../lib/utils/currency'
-import { Profile } from '../Application'
-import ShowContainer from '../components/showContainer'
+import { Database } from '../../../lib/database.types'
+import { numToCurrency, numToCurrencyString } from '../../../lib/utils/currency'
+import { Profile } from '../../Application'
+import ShowContainer from '../../components/showContainer'
 import { getProfilesQuery } from '../profile/query'
 import { getTenentQuery } from '../tenent/query'
 
@@ -82,13 +82,13 @@ class ShowBilling extends Nullstack {
           </div>
           <div class="flex space-x-6">
             <a
-              href={`/commitment/${commitment.id}/billing/${id}`}
+              href={`/adm/commitment/${commitment.id}/billing/${id}`}
               class="text-pink-600 font-medium text-md underline underline-offset-1"
             >
               Edit
             </a>
             <a
-              href={`/commitment/${commitment.id}/ticket?billing=${id}`}
+              href={`/adm/commitment/${commitment.id}/ticket?billing=${id}`}
               class="text-pink-600 font-medium text-md underline underline-offset-1"
             >
               Tickets
@@ -124,7 +124,7 @@ class ShowBilling extends Nullstack {
     }
 
     return (
-      <ShowContainer title="Billing" createPath={`/commitment/${params.slug}/billing/create`}>
+      <ShowContainer title="Billing" createPath={`/adm/commitment/${params.slug}/billing/create`}>
         {!this.result.length && this.initiated && <h1>Empty</h1>}
         {this.result.map((item) => (
           <BillingItem {...{ ...item }} commitment={item.commitment} />

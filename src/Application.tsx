@@ -6,13 +6,14 @@ import '../tailwind.css'
 
 import { Database } from '../lib/database.types'
 import Auth from './auth/index'
-import Commitment from './commitment'
+import Commitment from './adm/commitment'
 import Home from './Home'
 import Navbar from './mavbar'
 import { PUBLIC_ROUTES } from './mavbar/constants'
 import NotFound from './NotFound'
-import { getProfilesQuery } from './profile/query'
-import Tenent from './tenent'
+import { getProfilesQuery } from './adm/profile/query'
+import Tenent from './adm/tenent'
+import Adm from './adm'
 
 type TenentType = {
   id: string
@@ -88,8 +89,7 @@ class Application extends Nullstack {
         <main>
           <Home route="/" />
           <Auth route="/auth/*" />
-          <Commitment route="/commitment/*" />
-          <Tenent route="/tenent/*" />
+          <Adm route='/adm/*' />
           <Error route="/error" error={this.error} />
           <NotFound route="*" />
         </main>

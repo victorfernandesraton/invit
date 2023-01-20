@@ -14,10 +14,10 @@ class Commitment extends Nullstack {
   render() {
     return (
       <>
-        <ShowCommitments route="/commitment" />
-        <CreateCommitment route="/commitment/create" />
-        <EditCommitment type="Edit" route="/commitment/:slug" />
-        <Billing route="/commitment/:slug/billing/*" />
+        <ShowCommitments route="/adm/commitment" />
+        <CreateCommitment route="/adm/commitment/create" />
+        <EditCommitment type="Edit" route="/adm/commitment/:slug" />
+        <Billing route="/adm/commitment/:slug/billing/*" />
       </>
     )
   }

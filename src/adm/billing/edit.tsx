@@ -2,7 +2,7 @@ import { NullstackClientContext } from 'nullstack'
 
 import { SupabaseClient } from '@supabase/supabase-js'
 
-import { Database } from '../../lib/database.types'
+import { Database } from '../../../lib/database.types'
 import { getProfilesQuery } from '../profile/query'
 import BillingForm from './form'
 import { getBillingById } from './query'

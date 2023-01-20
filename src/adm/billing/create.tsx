@@ -2,8 +2,8 @@ import { NullstackClientContext } from 'nullstack'
 
 import { SupabaseClient } from '@supabase/supabase-js'
 
-import { Database } from '../../lib/database.types'
-import { Profile } from '../Application'
+import { Database } from '../../../lib/database.types'
+import { Profile } from '../../Application'
 import { getCommitmentById } from '../commitment/query'
 import { getProfilesQuery } from '../profile/query'
 import BillingForm from './form'

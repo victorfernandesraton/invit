@@ -2,8 +2,8 @@ import Nullstack, { NullstackClientContext } from 'nullstack'
 
 import { SupabaseClient } from '@supabase/supabase-js'
 
+import { getProfilesQuery } from '../adm/profile/query'
 import { CentralFormContainer } from '../components/centralFrom'
-import { getProfilesQuery } from '../profile/query'
 
 type LoginContext = {
   database: SupabaseClient

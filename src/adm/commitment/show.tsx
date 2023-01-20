@@ -2,10 +2,10 @@ import Nullstack, { NullstackClientContext, NullstackNode } from 'nullstack'
 
 import { SupabaseClient } from '@supabase/supabase-js'
 
-import { Database } from '../../lib/database.types'
-import { numToCurrency } from '../../lib/utils/currency'
-import { parseDateToString } from '../../lib/utils/date'
-import ShowContainer from '../components/showContainer'
+import { Database } from '../../../lib/database.types'
+import { numToCurrency } from '../../../lib/utils/currency'
+import { parseDateToString } from '../../../lib/utils/date'
+import ShowContainer from '../../components/showContainer'
 import { getProfilesQuery } from '../profile/query'
 
 declare function Item(props: Database['public']['Tables']['commitment']['Row']): NullstackNode
@@ -81,11 +81,11 @@ class ShowCommitments extends Nullstack {
           <div class="p-6 flex flex-col flex-1">
             <div class="flex flex-row mb-2 space-x-2">
               <h5 class="text-black text-lg font-medium text-ellipsis	">{title}</h5>
-              <a href={`/commitment/${id}`} class="text-pink-600 font-medium text-md underline underline-offset-1">
+              <a href={`/adm/commitment/${id}`} class="text-pink-600 font-medium text-md underline underline-offset-1">
                 Edit
               </a>
               <a
-                href={`/commitment/${id}/billing`}
+                href={`/adm/commitment/${id}/billing`}
                 class="text-pink-600 font-medium text-md underline underline-offset-1"
               >
                 Prices
@@ -134,7 +134,7 @@ class ShowCommitments extends Nullstack {
     }
 
     return (
-      <ShowContainer title="Commitment">
+      <ShowContainer title="Commitment" createPath="/adm/commitment/create">
         {!this.result.length && this.initiated && <h1>Empty</h1>}
         {this.result.map((item) => (
           <Item {...{ ...item }} />

@@ -9,9 +9,9 @@ class Billing extends Nullstack {
   render() {
     return (
       <>
-        <ShowBilling route="/commitment/:slug/billing" />
-        <CreateBilling route="/commitment/:slug/billing/create" />
-        <EditBilling type="Edit" route="/commitment/:commitmentId/billing/:billingId" />
+        <ShowBilling route="/adm/commitment/:slug/billing" />
+        <CreateBilling route="/adm/commitment/:slug/billing/create" />
+        <EditBilling type="Edit" route="/adm/commitment/:commitmentId/billing/:billingId" />
       </>
     )
   }

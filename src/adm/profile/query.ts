@@ -1,7 +1,7 @@
 import { SupabaseClient } from '@supabase/supabase-js'
 
-import { Database } from '../../lib/database.types'
-import { QueryStorage } from '../storage'
+import { Database } from '../../../lib/database.types'
+import { QueryStorage } from '../../storage'
 
 export type ProfileResult = Database['public']['Tables']['profile']['Row'] & {
   tenent?: {

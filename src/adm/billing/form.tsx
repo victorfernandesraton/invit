@@ -1,7 +1,7 @@
 import Nullstack, { NullstackClientContext } from 'nullstack'
 
-import { Database } from '../../lib/database.types'
-import { CentralFormContainer } from '../components/centralFrom'
+import { Database } from '../../../lib/database.types'
+import { CentralFormContainer } from '../../components/centralFrom'
 
 type Tenent = {
   id: string
@@ -191,7 +191,7 @@ abstract class BillingForm extends Nullstack {
                 Sucess go to billing page{' '}
                 <a
                   class="text-pink-600 hover:text-pink-700 hover:underline focus:text-pink-700 transition duration-200 ease-in-out"
-                  href={`/commitment/${this.commitment.id}/billing`}
+                  href={`/adm/commitment/${this.commitment.id}/billing`}
                 >
                   Here
                 </a>

@@ -1,6 +1,6 @@
 import { SupabaseClient } from '@supabase/supabase-js'
 
-import { Database } from '../../lib/database.types'
+import { Database } from '../../../lib/database.types'
 import { ProfileResult } from '../profile/query'
 
 export async function getTenentQuery(

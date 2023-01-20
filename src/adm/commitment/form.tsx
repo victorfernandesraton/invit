@@ -1,8 +1,8 @@
 import Nullstack, { NullstackClientContext } from 'nullstack'
 
-import { Database } from '../../lib/database.types'
-import { parseDateToDefaultString } from '../../lib/utils/date'
-import { CentralFormContainer } from '../components/centralFrom'
+import { Database } from '../../../lib/database.types'
+import { parseDateToDefaultString } from '../../../lib/utils/date'
+import { CentralFormContainer } from '../../components/centralFrom'
 
 type Tenent = {
   id: string
@@ -346,7 +346,7 @@ abstract class CommitmentForm extends Nullstack {
                 Sucess go to commitment page{' '}
                 <a
                   class="text-pink-600 hover:text-pink-700 hover:underline focus:text-pink-700 transition duration-200 ease-in-out"
-                  href={`/commitment/${this.result.id}`}
+                  href={`/adm/commitment/${this.result.id}`}
                 >
                   Here
                 </a>
