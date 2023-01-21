@@ -90,6 +90,9 @@ class ShowCommitments extends Nullstack {
               >
                 Prices
               </a>
+              <a href={`/commitment/${id}`} class="text-pink-600 font-medium text-md underline underline-offset-1">
+                Preview
+              </a>
             </div>
 
             <p class="text-gray-700 text-base mb-4">{description}</p>

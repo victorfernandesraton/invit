@@ -5,15 +5,14 @@ import { PostgrestError, SupabaseClient } from '@supabase/supabase-js'
 import '../tailwind.css'
 
 import { Database } from '../lib/database.types'
+import Adm from './adm'
+import { getProfilesQuery } from './adm/profile/query'
 import Auth from './auth/index'
-import Commitment from './adm/commitment'
+import Commitment from './commitment'
 import Home from './Home'
 import Navbar from './mavbar'
 import { PUBLIC_ROUTES } from './mavbar/constants'
 import NotFound from './NotFound'
-import { getProfilesQuery } from './adm/profile/query'
-import Tenent from './adm/tenent'
-import Adm from './adm'
 
 type TenentType = {
   id: string
@@ -45,14 +44,14 @@ class Application extends Nullstack {
 
   async hydrate(context: NullstackClientContext<ApplicationProps>) {
     if (this.logged) {
-      this.profiles = await getProfilesQuery(context.database)
       try {
+        this.profiles = await getProfilesQuery(context.database)
       } catch (error) {
         this.error = error
         context.router.url = '/error'
       }
     }
-    if (!PUBLIC_ROUTES.includes(context.router.path)) {
+    if (!PUBLIC_ROUTES.find((item) => context.router.path.includes(item))) {
       if (!this.logged) {
         context.router.url = '/auth'
       }
@@ -71,8 +70,8 @@ class Application extends Nullstack {
     context.router.path = '/auth'
   }
 
-  renderError({ error }: NullstackClientContext<{ error: Error | PostgrestError }>) {
-    return <h1>{error?.message}</h1>
+  renderError({ error }: NullstackClientContext<{ error?: Error | PostgrestError }>) {
+    return <h1>{error?.message ?? 'Unexpected Error'}</h1>
   }
 
   render() {
@@ -89,7 +88,8 @@ class Application extends Nullstack {
         <main>
           <Home route="/" />
           <Auth route="/auth/*" />
-          <Adm route='/adm/*' />
+          <Adm route="/adm/*" />
+          <Commitment route="/commitment/*" />
           <Error route="/error" error={this.error} />
           <NotFound route="*" />
         </main>
