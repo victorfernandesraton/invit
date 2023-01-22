@@ -42,15 +42,14 @@ class Application extends Nullstack {
     context.page.title = 'Invit'
   }
 
-  async hydrate(context: NullstackClientContext<ApplicationProps>) {
-    if (this.logged) {
-      try {
-        this.profiles = await getProfilesQuery(context.database)
-      } catch (error) {
-        this.error = error
-        context.router.url = '/error'
-      }
+  async initiate(context: NullstackClientContext<ApplicationProps>) {
+    try {
+      this.profiles = await getProfilesQuery(context.database)
+    } catch (error) {
+      this.error = error
+      context.router.url = '/error'
     }
+
     if (!PUBLIC_ROUTES.find((item) => context.router.path.includes(item))) {
       if (!this.logged) {
         context.router.url = '/auth'

@@ -50,8 +50,9 @@ class ShowBilling extends Nullstack {
           this.tenents.map((item) => item.id),
         )
         .neq('status', 0)
-        .eq('commitment.id', context.params.slug)
+        .eq('commitment_id', context.params.slug)
         .range(this.offset, this.limit)
+
 
       this.error = billingError
       if (!this.error) {
