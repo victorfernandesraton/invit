@@ -27,6 +27,7 @@ abstract class BillingForm extends Nullstack {
   remote = true
   currency = null
   price = null
+  status = false
 
   result: Database['public']['Tables']['billing']
 
@@ -138,6 +139,25 @@ abstract class BillingForm extends Nullstack {
                 <div class="form-check form-switch">
                   <input
                     bind={this.remote}
+                    class="form-check-input appearance-none w-9 rounded-full float-left h-5 align-top  bg-no-repeat focus:outline-none cursor-pointer
+                    border border-black border-r-2 border-b-2
+                    bg-pink-300
+                    checked:bg-pink-600
+                    checked:border-black
+                    "
+                    type="checkbox"
+                    role="switch"
+                    id="enableDateEnd"
+                  />
+                </div>
+              </div>
+              <div class="form-group mb-6 flex flex-row space-x-2 justify-between">
+                <label class="form-check-label inline-block text-gray-800 text-lg" for="disabled">
+                  Disabled
+                </label>
+                <div class="form-check form-switch">
+                  <input
+                    bind={this.status}
                     class="form-check-input appearance-none w-9 rounded-full float-left h-5 align-top  bg-no-repeat focus:outline-none cursor-pointer
                     border border-black border-r-2 border-b-2
                     bg-pink-300

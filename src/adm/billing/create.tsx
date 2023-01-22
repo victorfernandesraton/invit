@@ -30,6 +30,7 @@ class CreateBilling extends BillingForm {
   price = null
 
   result: Database['public']['Tables']['billing']
+  status = false
 
   async initiate(context: NullstackClientContext<CreateBillingContext>) {
     try {
@@ -58,6 +59,7 @@ class CreateBilling extends BillingForm {
         description: this.description,
         price: this.price * 100,
         remote: this.remote,
+        status: !this.status ? 1 : 2,
       })
       .select('*')
 

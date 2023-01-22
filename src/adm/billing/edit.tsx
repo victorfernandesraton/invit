@@ -31,6 +31,7 @@ class EditBilling extends BillingForm {
     this.description = this.billing.description
     this.price = this.billing.price / 100
     this.remote = this.billing.remote
+    this.status = this.billing.status === 2
   }
 
   async initiate(context: NullstackClientContext<EditBillingContext>) {
@@ -67,6 +68,7 @@ class EditBilling extends BillingForm {
         description: this.description,
         price: this.price * 100,
         remote: this.remote,
+        status: !this.status ? 1 : 2,
       })
       .eq('id', this.billing.id)
       .select('*')
