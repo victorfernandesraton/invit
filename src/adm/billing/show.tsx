@@ -53,7 +53,6 @@ class ShowBilling extends Nullstack {
         .eq('commitment_id', context.params.slug)
         .range(this.offset, this.limit)
 
-
       this.error = billingError
       if (!this.error) {
         this.result = billing
@@ -67,10 +66,21 @@ class ShowBilling extends Nullstack {
     return (
       <div class="mb-4 flex flex-col md:flex-row justify-between rounded-lg bg-white border border-black border-b-4 border-r-4">
         <div class="p-6 flex flex-col">
-          <div class="flex flex-row mb-2 justify-between">
+          <div class="flex flex-col mb-2 gap-2">
+            <div class="flex text-pink-600 gap-2 font-medium text-xs underline underline-offset-1">
+              <a href={`/adm/commitment/${commitment.id}/billing/${id}`} class="">
+                Edit
+              </a>
+              <a href={`/adm/commitment/${commitment.id}/ticket?billing=${id}`} class="">
+                Tickets
+              </a>
+            </div>
+
             <p class="text-black text-xl font-medium text-ellipsis	">{description}</p>
 
-            {remote && <span>Remote</span>}
+            <p class="text-xl">
+              Remote: <spam class="capitalize text-pink-700">{remote ? 'yes' : 'no'}</spam>
+            </p>
           </div>
 
           <div class="flex">
@@ -81,22 +91,8 @@ class ShowBilling extends Nullstack {
               </span>
             </p>
           </div>
-          <div class="flex space-x-6">
-            <a
-              href={`/adm/commitment/${commitment.id}/billing/${id}`}
-              class="text-pink-600 font-medium text-md underline underline-offset-1"
-            >
-              Edit
-            </a>
-            <a
-              href={`/adm/commitment/${commitment.id}/ticket?billing=${id}`}
-              class="text-pink-600 font-medium text-md underline underline-offset-1"
-            >
-              Tickets
-            </a>
-          </div>
         </div>
-        <div class="p-6 py-2 md:py-6 mb-6 md:mb-0 flex flex-col space-y-4 md:space-y-0 md:flex-row md:space-x-4">
+        <div class=" p-6 flex flex-col gap-4 md:w-2/5 xl:w-2/6">
           <div class="flex flex-col  space-y-2">
             <p class="md:text-sm">Avaliable invites</p>
             <div class="w-full bg-gray-200 rounded-full">

@@ -79,20 +79,24 @@ class ShowCommitments extends Nullstack {
       <div class="flex flex-col md:flex-row  rounded-lg bg-white border border-black border-b-4 border-r-4">
         <div class="flex flex-col md:flex-row w-full">
           <div class="p-6 flex flex-col flex-1">
-            <div class="flex flex-row mb-2 space-x-2">
-              <h5 class="text-black text-lg font-medium text-ellipsis	">{title}</h5>
-              <a href={`/adm/commitment/${id}`} class="text-pink-600 font-medium text-md underline underline-offset-1">
-                Edit
-              </a>
-              <a
-                href={`/adm/commitment/${id}/billing`}
-                class="text-pink-600 font-medium text-md underline underline-offset-1"
+            <div class="flex flex-col gap-2 mb-2">
+              <div
+                class="flex flex-row gap-2 
+							
+							text-pink-600 text-xs underline underline-offset-1
+							"
               >
-                Prices
-              </a>
-              <a href={`/commitment/${id}`} class="text-pink-600 font-medium text-md underline underline-offset-1">
-                Preview
-              </a>
+                <a href={`/adm/commitment/${id}`} class="">
+                  Edit
+                </a>
+                <a href={`/adm/commitment/${id}/billing`} class="">
+                  Prices
+                </a>
+                <a href={`/commitment/${id}`} class="">
+                  Preview
+                </a>
+              </div>
+              <h5 class="text-black text-lg font-medium text-ellipsis	">{title}</h5>
             </div>
 
             <p class="text-gray-700 text-base mb-4">{description}</p>
@@ -107,7 +111,7 @@ class ShowCommitments extends Nullstack {
               )}
             </div>
           </div>
-          <div class="p-6 py-2 md:py-6 mb-6 md:mb-0 flex flex-row space-x-4 md:w-3/5 xl:w-3/6">
+          <div class="p-6 py-2 md:py-6 mb-6 md:mb-0 flex flex-col gap-2 md:w-3/5 xl:w-2/6">
             <div class="flex flex-col space-y-2">
               <p class="md:text-sm">Avaliable invites</p>
               <div class="w-full bg-gray-200 rounded-full">
@@ -139,9 +143,11 @@ class ShowCommitments extends Nullstack {
     return (
       <ShowContainer title="Commitment" createPath="/adm/commitment/create">
         {!this.result.length && this.initiated && <h1>Empty</h1>}
-        {this.result.map((item) => (
-          <Item {...{ ...item }} />
-        ))}
+        <div class="flex flex-col gap-2">
+          {this.result.map((item) => (
+            <Item {...{ ...item }} />
+          ))}
+        </div>
       </ShowContainer>
     )
   }
