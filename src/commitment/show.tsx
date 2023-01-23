@@ -30,6 +30,12 @@ class ShowOneCommitment extends Nullstack {
   currency: string = null
   billings: Billing[] = []
 
+  prepare(context: NullstackClientContext) {
+    context.page.title = this.title
+    context.page.description = this.description
+    context.page.changes = 'daily'
+  }
+
   async initiate(context: NullstackClientContext<ShowOneCommitmentContext>) {
     const { data, error } = await context.database
       .from('commitment')
@@ -58,6 +64,7 @@ class ShowOneCommitment extends Nullstack {
     }
     this.billings = data[0].billing
     this.currency = data[0].currency
+		this.prepare()
     context.page.title = `Invit - ${this.title}`
     context.page.description = this.description
   }
@@ -112,7 +119,7 @@ class ShowOneCommitment extends Nullstack {
           <div class="flex flex-row border-black border-2 border-b-4 lg:border-r-0 p-6 items-center rounded-3xl w-full">
             <div class="flex flex-col gap-1">
               <h1 class="text-2xl md:text-5xl">{this.title}</h1>
-              <a class="text-xs text-pink-500" href={`/commitment${this.id}`}>
+              <a class="text-xs text-pink-500" href={`/commitment/${this.id}`}>
                 #{`{${this.id}}`}
               </a>
               <h2 class="md:text-2xl text-xl">{this.description}</h2>
