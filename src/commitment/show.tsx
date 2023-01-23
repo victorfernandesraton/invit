@@ -1,11 +1,10 @@
 import Nullstack, { NullstackClientContext, NullstackNode } from 'nullstack'
 
 import { SupabaseClient } from '@supabase/supabase-js'
-import { readFileSync } from 'node:fs'
-import { Remarkable } from 'remarkable'
 
 import { numToCurrency } from '../../lib/utils/currency'
 import { parseDateToString } from '../../lib/utils/date'
+import Markdon from '../institutional/markdon'
 
 type ShowOneCommitmentContext = {
   database: SupabaseClient
@@ -30,10 +29,8 @@ class ShowOneCommitment extends Nullstack {
   end_at: Date = null
   currency: string = null
   billings: Billing[] = []
-  terms: string = null
 
   async initiate(context: NullstackClientContext<ShowOneCommitmentContext>) {
-    this.terms = await this.getTerms()
     const { data, error } = await context.database
       .from('commitment')
       .select('*, billing(id, price, remote, description, status), tenent(id, status)')
@@ -61,16 +58,6 @@ class ShowOneCommitment extends Nullstack {
     }
     this.billings = data[0].billing
     this.currency = data[0].currency
-  }
-
-  static async getTerms() {
-    const data = readFileSync('./src/institutional/terms.md', 'utf-8')
-
-    return data
-  }
-
-  renderTerms() {
-    return new Remarkable().render(this.terms)
   }
 
   renderBilling({ description, price, status }: Billing) {
@@ -150,9 +137,7 @@ class ShowOneCommitment extends Nullstack {
             </div>
           </div>
         </div>
-
-        <h3>Terms</h3>
-        <Terms />
+        <Markdon name={'terms'} />
       </article>
     )
   }
