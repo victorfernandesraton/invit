@@ -1,19 +1,30 @@
-const [server, client] = require('nullstack/webpack.config');
+const [server, client] = require('nullstack/webpack.config')
+
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 function customClient(...args) {
-  const config = client(...args);
-  const rule = config.module.rules.find((rule) => rule.test.test('.css'));
+  const config = client(...args)
+  const rule = config.module.rules.find((r) => r.test.test('.css'))
   rule.use.push({
     loader: require.resolve('postcss-loader'),
     options: {
       postcssOptions: {
         plugins: {
           tailwindcss: {},
-        }
+        },
       },
     },
-  });
-  return config;
+  })
+  if (config.mode === 'buildtest') {
+    config.plugins.push(
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'server',
+        logLevel: 'info',
+      }),
+    )
+  }
+
+  return config
 }
 
 module.exports = [server, customClient]

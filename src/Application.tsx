@@ -28,7 +28,7 @@ type ApplicationProps = {
   profiles: Profile[]
 }
 
-declare function Error(props: { error: PostgrestError | Error }): NullstackNode
+declare function Error(props: { error?: PostgrestError | Error }): NullstackNode
 
 class Application extends Nullstack {
 
@@ -73,7 +73,14 @@ class Application extends Nullstack {
     return <h1>{error?.message ?? 'Unexpected Error'}</h1>
   }
 
-  render() {
+  render({ page }: NullstackClientContext) {
+    if (page.status !== 200) {
+      return (
+        <main>
+          <Error route="/error" />
+        </main>
+      )
+    }
     return (
       <body class="font-mono">
         {this.logged && (

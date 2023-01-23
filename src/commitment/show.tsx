@@ -58,6 +58,8 @@ class ShowOneCommitment extends Nullstack {
     }
     this.billings = data[0].billing
     this.currency = data[0].currency
+    context.page.title = `Invit - ${this.title}`
+    context.page.description = this.description
   }
 
   renderBilling({ description, price, status }: Billing) {

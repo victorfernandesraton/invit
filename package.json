@@ -8,11 +8,15 @@
     "nullstack": "^0.17.2",
     "postcss-loader": "^7.0.1",
     "supabase": "^1.27.7",
-    "tailwindcss": "^3.0.0"
+    "tailwindcss": "^3.0.0",
+    "webpack-bundle-analyzer": "^4.7.0",
+    "webpack-cli": "^5.0.1"
   },
   "scripts": {
     "start": "npx nullstack start",
     "build": "npx nullstack build",
+    "webpack:profile": "webpack --profile --json > stats.json",
+		"webpack:analyzer": "webpack-bundle-analyzer ./stats.json",
     "migrate:diff": "npx supabase db diff --use-migra -f",
     "migrate:push": "npx supabase db push",
     "migrate:types": "npx supabase gen types typescript --local > lib/database.types.ts",
