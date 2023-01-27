@@ -7,6 +7,7 @@ import { numToCurrency } from '../../../lib/utils/currency'
 import { parseDateToString } from '../../../lib/utils/date'
 import ShowContainer from '../../components/showContainer'
 import { getProfilesQuery } from '../profile/query'
+import { countTotalAmmount } from './utils'
 
 declare function Item(props: Database['public']['Tables']['commitment']['Row']): NullstackNode
 
@@ -17,6 +18,15 @@ type ShowCommitmentsContext = {
 type Tenent = {
   id: string
   name: string
+}
+
+type Commitment = NullstackClientContext<Database['public']['Tables']['commitment']['Row']> & {
+  ticket: {
+    id: string
+    billing: {
+      price: number
+    }
+  }[]
 }
 
 class ShowCommitments extends Nullstack {
@@ -33,7 +43,7 @@ class ShowCommitments extends Nullstack {
   description = null
   startAt = null
   endAt = null
-  result: Database['public']['Tables']['commitment']['Row'][] = []
+  result: Commitment[] = []
 
   async initiate({ database }: NullstackClientContext<ShowCommitmentsContext>) {
     this.loading = true
@@ -41,7 +51,7 @@ class ShowCommitments extends Nullstack {
       const profile = await getProfilesQuery(database)
       if (!this.error) {
         this.tenents = profile.map((item) => item.tenent)
-        const request = database.from('commitment').select('*')
+        const request = database.from('commitment').select('*, ticket(id, billing(id, price))')
         if (!profile.find((item) => !item.tenent && item.level === 0)) {
           request.in(
             'tenent_id',
@@ -67,14 +77,7 @@ class ShowCommitments extends Nullstack {
     }
   }
 
-  renderItem({
-    id,
-    title,
-    description,
-    start_at,
-    end_at,
-    currency,
-  }: NullstackClientContext<Database['public']['Tables']['commitment']['Row']>) {
+  renderItem({ id, title, description, start_at, end_at, currency, ticket }: NullstackClientContext<Commitment>) {
     return (
       <div class="flex flex-col md:flex-row  rounded-lg bg-white border border-black border-b-4 border-r-4">
         <div class="flex flex-col md:flex-row w-full">
@@ -126,7 +129,7 @@ class ShowCommitments extends Nullstack {
             <div class="flex flex-col space-y-2">
               <p class="md:text-sm">Ammount total</p>
               <h5 class="text-pink-700 lg:text-xl md:text-md text-xs">
-                {numToCurrency(200.5)} {currency}
+                {numToCurrency(countTotalAmmount(ticket) / 100)} {currency}
               </h5>
             </div>
           </div>

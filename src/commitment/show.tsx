@@ -151,7 +151,7 @@ class ShowOneCommitment extends Nullstack {
     }
     return (
       <article class="flex flex-col  h-screen w-screen items-center">
-        <dialog open={this.sucess}>
+        <dialog open={this.sucess} class="backdrop:bg-red-500">
           <p>Sucess</p>
           <button
             onclick={() => {
