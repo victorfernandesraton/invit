@@ -10,6 +10,10 @@ type ShowOneCommitmentContext = {
   database: SupabaseClient
 }
 
+type CheckoutTicket = ShowOneCommitmentContext & {
+  billing_id: string
+}
+
 type Billing = {
   description: string
   id: string
@@ -29,6 +33,10 @@ class ShowOneCommitment extends Nullstack {
   end_at: Date = null
   currency: string = null
   billings: Billing[] = []
+  isLogged = false
+  error = null
+  result = null
+  sucess = false
 
   prepare(context: NullstackClientContext) {
     context.page.title = this.title
@@ -37,6 +45,8 @@ class ShowOneCommitment extends Nullstack {
   }
 
   async initiate(context: NullstackClientContext<ShowOneCommitmentContext>) {
+    const { data: user } = await context.database.auth.getUser()
+    this.isLogged = !!user?.user?.id
     const { data, error } = await context.database
       .from('commitment')
       .select('*, billing(id, price, remote, description, status), tenent(id, status)')
@@ -64,12 +74,37 @@ class ShowOneCommitment extends Nullstack {
     }
     this.billings = data[0].billing
     this.currency = data[0].currency
-		this.prepare()
     context.page.title = `Invit - ${this.title}`
     context.page.description = this.description
   }
 
-  renderBilling({ description, price, status }: Billing) {
+  async buyTicket(context: NullstackClientContext<CheckoutTicket>) {
+    const { data: user } = await context.database.auth.getUser()
+    if (!user?.user?.id) {
+      const hosturl = new URL(context.router.base)
+      const url = new URL('/auth/signin', hosturl.origin)
+      url.searchParams.set('c', this.id)
+
+      context.router.url = url.toString()
+      return
+    }
+    const { data, error } = await context.database
+      .from('ticket')
+      .insert({
+        billing_id: context.billing_id,
+        commitment_id: this.id,
+        owner_id: user?.user?.id,
+      })
+      .select('*')
+    if (error) {
+      context.router.url = '/error'
+      return
+    }
+    this.result = data[0]
+    this.sucess = true
+  }
+
+  renderBilling({ description, price, status, id }: Billing) {
     return (
       <div class="flex flex-row border-b-2 border-black border-dotted justify-between h-full items-center py-2">
         <div class="flex flex-col w-1/2 sm:w-2/3">
@@ -80,6 +115,7 @@ class ShowOneCommitment extends Nullstack {
         </div>
         <div class="flex flex-col">
           <button
+            onclick={() => this.buyTicket({ billing_id: id })}
             disabled={status !== 1}
             class="w-full
 						self-center
@@ -115,6 +151,16 @@ class ShowOneCommitment extends Nullstack {
     }
     return (
       <article class="flex flex-col  h-screen w-screen items-center">
+        <dialog open={this.sucess}>
+          <p>Sucess</p>
+          <button
+            onclick={() => {
+              this.sucess = false
+            }}
+          >
+            Close
+          </button>
+        </dialog>
         <div class="flex flex-col px-6 lg:flex-row w-full max-w-7xl md:w-4/5 mt-12">
           <div class="flex flex-row border-black border-2 border-b-4 lg:border-r-0 p-6 items-center rounded-3xl w-full">
             <div class="flex flex-col gap-1">

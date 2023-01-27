@@ -26,7 +26,11 @@ class Login extends Nullstack {
     const { data } = await context.database.auth.getSession()
     if (data?.session?.user?.id) {
       await getProfilesQuery(context.database)
-      context.router.url = '/'
+      if (context?.params?.c) {
+        context.router.url = `/commitment/${context.params.c}`
+      } else {
+        context.router.url = `/`
+      }
     }
   }
 

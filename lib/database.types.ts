@@ -28,6 +28,9 @@ export interface Database {
     Enums: {
       [_ in never]: never
     }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
   public: {
     Tables: {
@@ -141,6 +144,32 @@ export interface Database {
           status?: number | null
         }
       }
+      ticket: {
+        Row: {
+          billing_id: string
+          commitment_id: string
+          created_at: string | null
+          id: number
+          owner_id: string | null
+          status: number
+        }
+        Insert: {
+          billing_id: string
+          commitment_id: string
+          created_at?: string | null
+          id?: number
+          owner_id?: string | null
+          status?: number
+        }
+        Update: {
+          billing_id?: string
+          commitment_id?: string
+          created_at?: string | null
+          id?: number
+          owner_id?: string | null
+          status?: number
+        }
+      }
     }
     Views: {
       [_ in never]: never
@@ -149,6 +178,9 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
       [_ in never]: never
     }
   }
@@ -278,6 +310,9 @@ export interface Database {
       }
     }
     Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
       [_ in never]: never
     }
   }

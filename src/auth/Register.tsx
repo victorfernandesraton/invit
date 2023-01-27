@@ -12,12 +12,11 @@ class Register extends Nullstack {
   error: Error | null = null
   loadingLogin = false
 
-	prepare(context: NullstackClientContext) {
+  prepare(context: NullstackClientContext) {
     context.page.locale = 'en-US'
     context.page.changes = 'hourly'
     context.page.title = 'Register'
   }
-
 
   async signup(context: NullstackClientContext<{ database: SupabaseClient }>) {
     this.loadingLogin = true
@@ -29,7 +28,11 @@ class Register extends Nullstack {
     if (error) {
       this.error = error
     }
-    context.router.url = '/'
+    if (context?.params?.c) {
+      context.router.url = `/commitment/${context.params.c}`
+    } else {
+      context.router.url = `/`
+    }
   }
 
   update() {
