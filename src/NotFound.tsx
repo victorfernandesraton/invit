@@ -5,6 +5,7 @@ class NotFound extends Nullstack {
 	prepare(context: NullstackClientContext) {
     context.page.title = 'Not found'
     context.page.changes = 'never'
+    context.page.status = 404
   }
 
   render() {

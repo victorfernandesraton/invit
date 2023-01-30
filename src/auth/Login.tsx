@@ -29,7 +29,7 @@ class Login extends Nullstack {
       if (context?.params?.c) {
         context.router.url = `/commitment/${context.params.c}`
       } else {
-        context.router.url = `/`
+        context.router.path = `/`
       }
     }
   }

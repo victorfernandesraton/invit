@@ -7,7 +7,7 @@ type Props = {
 }
 export default function ShowContainer({ children, title, createPath = '/commitment/create' }: Props) {
   return (
-    <div class="mt-8 flex align-middle justify-center">
+    <div class="mt-20 flex align-middle justify-center">
       <div class="flex flex-col w-5/6 lg:w-2/3">
         <div class="flex flex-row align-middle justify-between mb-4 w-full">
           <h3 class="text-black text-xl font-medium">{title}</h3>

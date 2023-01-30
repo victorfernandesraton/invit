@@ -37,12 +37,11 @@ class Markdon extends Nullstack<Props> {
 
   render({ name }: NullstackClientContext<Props>) {
     return (
-      <div class="mx-auto my-20 w-4/5 rounded-md">
-        <details class="duration-300">
-          <summary class="bg-inherit py-3 text-3xl cursor-pointer capitalize">{name}</summary>
-          <article html={this.html} />
-        </details>
-      </div>
+      <details class="flex duration-300">
+        <summary class="bg-inherit text-3xl cursor-pointer capitalize">{name}</summary>
+
+        <article class="h-fit mt-2" html={this.html} />
+      </details>
     )
   }
 

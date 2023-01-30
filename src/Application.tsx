@@ -32,7 +32,7 @@ declare function Error(props: { error?: PostgrestError | Error }): NullstackNode
 
 class Application extends Nullstack {
 
-	logged = false
+  logged = false
   profiles: Profile[] = []
   error = null
 
@@ -43,6 +43,8 @@ class Application extends Nullstack {
   }
 
   async initiate(context: NullstackClientContext<ApplicationProps>) {
+    const { data } = await context.database.auth.getSession()
+    this.logged = !!data?.session?.user?.id
     try {
       this.profiles = await getProfilesQuery(context.database)
     } catch (error) {
@@ -73,7 +75,7 @@ class Application extends Nullstack {
     return <h1>{error?.message ?? 'Unexpected Error'}</h1>
   }
 
-  render({ page }: NullstackClientContext) {
+  render({ page, router }: NullstackClientContext) {
     if (page.status !== 200) {
       return (
         <main>
@@ -82,7 +84,7 @@ class Application extends Nullstack {
       )
     }
     return (
-      <body class="font-mono">
+      <main class="font-mono">
         {this.logged && (
           <Navbar
             logout={this.logout}
@@ -91,15 +93,25 @@ class Application extends Nullstack {
             persistent={this.logged}
           />
         )}
-        <main>
+        <div>
           <Home route="/" />
           <Auth route="/auth/*" />
           <Adm route="/adm/*" />
           <Commitment route="/commitment/*" />
           <Error route="/error" error={this.error} />
           <NotFound route="*" />
-        </main>
-      </body>
+        </div>
+        {!this.logged && !router.path.includes('/auth') && (
+          <footer class="fixed-bottom w-full bg-white border-black border-2">
+            <div class="flex justify-center gap-2">
+              <p>Have account?</p>
+              <a href="/auth" class="text-pink-600 underline">
+                Sign in
+              </a>
+            </div>
+          </footer>
+        )}
+      </main>
     )
   }
 

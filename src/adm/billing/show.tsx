@@ -3,7 +3,7 @@ import Nullstack, { NullstackClientContext, NullstackNode } from 'nullstack'
 import { PostgrestError, SupabaseClient } from '@supabase/supabase-js'
 
 import { Database } from '../../../lib/database.types'
-import { numToCurrency, numToCurrencyString } from '../../../lib/utils/currency'
+import { numToCurrencyString } from '../../../lib/utils/currency'
 import { Profile } from '../../Application'
 import ShowContainer from '../../components/showContainer'
 import { getProfilesQuery } from '../profile/query'
@@ -20,10 +20,13 @@ type ShowBillingContest = {
 }
 type BillingItemType = Database['public']['Tables']['billing']['Row'] & {
   commitment: {
-    name
-    id
-    currency
+    name: string
+    id: string
+    currency: string
   }
+  ticket: {
+    id: string
+  }[]
 }
 
 declare function BillingItem(props: BillingItemType): NullstackNode
@@ -44,7 +47,7 @@ class ShowBilling extends Nullstack {
 
       const { data: billing, error: billingError } = await context.database
         .from('billing')
-        .select('* , commitment (currency, id)')
+        .select('* , commitment (currency, id), ticket(id)')
         .in(
           'commitment.tenent_id',
           this.tenents.map((item) => item.id),
@@ -62,10 +65,12 @@ class ShowBilling extends Nullstack {
     }
   }
 
-  renderBillingItem({ price, description, commitment, id, remote }: NullstackClientContext<BillingItemType>) {
+  renderBillingItem({ price, description, commitment, id, remote, ticket }: NullstackClientContext<BillingItemType>) {
+    const unitValue = price / 100
+
     return (
-      <div class="mb-4 flex flex-col md:flex-row justify-between rounded-lg bg-white border border-black border-b-4 border-r-4">
-        <div class="p-6 flex flex-col">
+      <div class="mb-4 p-6 flex flex-col md:flex-row justify-between rounded-lg bg-white border border-black border-b-4 border-r-4">
+        <div class="flex flex-col">
           <div class="flex flex-col mb-2 gap-2">
             <div class="flex text-pink-600 gap-2 font-medium text-xs underline underline-offset-1">
               <a href={`/adm/commitment/${commitment.id}/billing/${id}`} class="">
@@ -75,39 +80,29 @@ class ShowBilling extends Nullstack {
                 Tickets
               </a>
             </div>
-
             <p class="text-black text-xl font-medium text-ellipsis	">{description}</p>
-
-            <p class="text-xl">
-              Remote: <spam class="capitalize text-pink-700">{remote ? 'yes' : 'no'}</spam>
-            </p>
-          </div>
-
-          <div class="flex">
-            <p class="text-lg">
-              Price{' '}
-              <span class="text-pink-700">
-                {numToCurrencyString(price / 100, commitment.currency)} {commitment.currency}
-              </span>
-            </p>
-          </div>
-        </div>
-        <div class=" p-6 flex flex-col gap-4 md:w-2/5 xl:w-2/6">
-          <div class="flex flex-col  space-y-2">
-            <p class="md:text-sm">Avaliable invites</p>
-            <div class="w-full bg-gray-200 rounded-full">
-              <div
-                class="bg-pink-600 text-xs font-medium text-blue-100 text-center md:p-0.5 p-0.25 leading-none rounded-l-full border-2 border-black border-b-4 border-r-4"
-                style={`width: ${(5 / 10) * 100}%`}
-              >
-                <p class="text-white">2/10</p>
-              </div>
+            <div class="flex flex-row text-xl gap-2">
+              <p class="">Remote:</p>
+              <spam class="capitalize text-pink-700">{remote ? 'yes' : 'no'}</spam>
             </div>
           </div>
+          <div class="flex flex-row gap-2">
+            <p class="text-lg">Total selling</p>
+            <span class="text-pink-700 text-lg">{ticket.length} Tickets</span>
+          </div>
+        </div>
+        <div class="flex flex-col gap-2 text-lg">
           <div class="flex flex-col">
-            <p class="md:text-sm">Ammount total</p>
+            <p class="">Price </p>
+            <span class="text-pink-700">
+              {numToCurrencyString(unitValue, commitment.currency)} {commitment.currency}
+            </span>
+          </div>
+
+          <div class="flex flex-col">
+            <p class="">Ammount total</p>
             <h5 class="text-pink-700 text-lg">
-              {numToCurrency(200.5)} {commitment.currency}
+              {numToCurrencyString(unitValue * ticket.length, commitment.currency)} {commitment.currency}
             </h5>
           </div>
         </div>

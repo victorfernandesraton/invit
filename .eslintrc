@@ -1,18 +1,19 @@
 {
-  "extends": "plugin:nullstack/recommended",
-  "rules": {
-    "nullstack/prettier": [
-      "warn",
-      {
-        "trailingComma": "all",
-        "tabWidth": 2,
-        "semi": false,
-        "singleQuote": true,
-        "printWidth": 120
-      },
-      {
-        "usePrettierrc": false
-      }
-    ]
-  }
+	"extends": "plugin:nullstack/recommended",
+	"rules": {
+		"nullstack/prettier": [
+			"warn",
+			{
+				"allowIndentationTabs": true,
+				"trailingComma": "all",
+				"tabWidth": 2,
+				"semi": false,
+				"singleQuote": true,
+				"printWidth": 120
+			},
+			{
+				"usePrettierrc": false
+			}
+		]
+	}
 }

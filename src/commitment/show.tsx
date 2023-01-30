@@ -44,36 +44,42 @@ class ShowOneCommitment extends Nullstack {
     context.page.changes = 'daily'
   }
 
+  launch(context: NullstackClientContext) {
+    context.page.description = this.description
+  }
+
   async initiate(context: NullstackClientContext<ShowOneCommitmentContext>) {
     const { data: user } = await context.database.auth.getUser()
     this.isLogged = !!user?.user?.id
-    const { data, error } = await context.database
+    const { data: commitment, error } = await context.database
       .from('commitment')
       .select('*, billing(id, price, remote, description, status), tenent(id, status)')
       .eq('id', context.params.slug)
       .neq('billing.status', 0)
       .neq('status', 0)
       .neq('tenent.status', 0)
+      .limit(1)
+      .single()
 
     if (error) {
       context.router.url = '/error'
       return
     }
 
-    if (!data || !data?.[0]) {
+    if (!commitment) {
       context.router.url = '/404'
       return
     }
 
-    this.id = data[0].id
-    this.title = data[0].title
-    this.description = data[0].description
-    this.start_at = new Date(data[0].start_at)
-    if (data[0].end_at) {
-      this.end_at = new Date(data[0].end_at)
+    this.id = commitment.id
+    this.title = commitment.title
+    this.description = commitment.description
+    this.start_at = new Date(commitment.start_at)
+    if (commitment.end_at) {
+      this.end_at = new Date(commitment.end_at)
     }
-    this.billings = data[0].billing
-    this.currency = data[0].currency
+    this.billings = commitment.billing
+    this.currency = commitment.currency
     context.page.title = `Invit - ${this.title}`
     context.page.description = this.description
   }
@@ -106,7 +112,7 @@ class ShowOneCommitment extends Nullstack {
 
   renderBilling({ description, price, status, id }: Billing) {
     return (
-      <div class="flex flex-row border-b-2 border-black border-dotted justify-between h-full items-center py-2">
+      <div class="flex flex-row border-b-2 border-black border-dotted justify-between items-center">
         <div class="flex flex-col w-1/2 sm:w-2/3">
           <p class="text-truncate md:text-xl">{description}</p>
           <span class="text-pink-700 md:text-2xl">
@@ -150,7 +156,7 @@ class ShowOneCommitment extends Nullstack {
       return <p>Loading....</p>
     }
     return (
-      <article class="flex flex-col  h-screen w-screen items-center">
+      <article class="flex flex-col w-screen items-center mt-12 mb-6">
         <dialog open={this.sucess} class="backdrop:bg-red-500">
           <p>Sucess</p>
           <button
@@ -192,7 +198,9 @@ class ShowOneCommitment extends Nullstack {
             </div>
           </div>
         </div>
-        <Markdon name={'terms'} />
+        <div class="p-6 w-full md:w-4/5">
+          <Markdon name={'terms'} />
+        </div>
       </article>
     )
   }
