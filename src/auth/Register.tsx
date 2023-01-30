@@ -153,6 +153,7 @@ class Register extends Nullstack {
                 </div>
               )}
               <button
+                disabled={!(this.email && !this.error)}
                 onclick={this.signup}
                 type="submit"
                 class="
@@ -170,7 +171,12 @@ class Register extends Nullstack {
       hover:bg-white hover:text-pink-700 hover:border-pink-700
       transition
       duration-150
-      ease-in-out"
+      ease-in-out
+			disabled:bg-pink-400
+			disabled:text-white
+			disabled:border-gray-500
+			disabled:cursor-not-allowed
+			"
               >
                 Sign up
               </button>
