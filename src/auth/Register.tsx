@@ -50,7 +50,7 @@ class Register extends Nullstack {
   render() {
     return (
       <section class="flex h-screen items-center justify-center">
-        <div class="flex px-0 md:w-2/3 lg:w-3/12 sm:w-full sm:px-6 self-center content-center h-full items-center justify-center">
+        <div class="flex px-0 md:w-2/3 lg:w-4/12 sm:w-full sm:px-6 self-center content-center h-full items-center justify-center">
           <CentralFormContainer>
             <form class="flex flex-col">
               <div class="form-group mb-6">
