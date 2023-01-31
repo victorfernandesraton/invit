@@ -18,7 +18,7 @@ class Adm extends Nullstack {
     context.page.title = 'Invit - ADM'
   }
 
-  async initiate(context: NullstackClientContext<AdmContext>) {
+  async hydrate(context: NullstackClientContext<AdmContext>) {
     const profiles = await getProfilesQuery(context.database)
 
     if (!profiles.find((p) => p.level <= 2)) {

@@ -15,7 +15,7 @@ class ShowTenent extends Nullstack {
 
   result: Database['public']['Tables']['tenent']['Row'][] = []
 
-  async initiate(context: NullstackClientContext<ShowTenentContext>) {
+  async hydrate(context: NullstackClientContext<ShowTenentContext>) {
     const profiles = await getProfilesQuery(context.database)
 
     if (!profiles.find((profile) => profile.level < 2)) {

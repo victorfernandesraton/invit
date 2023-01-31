@@ -8,92 +8,90 @@ import { getProfilesQuery } from '../profile/query'
 import { CommitmentItem } from './item'
 
 type ShowCommitmentsContext = {
-  database: SupabaseClient
+	database: SupabaseClient
 }
 
 type Tenent = {
-  id: string
-  name: string
+	id: string
+	name: string
 }
 
 type Commitment = NullstackClientContext<Database['public']['Tables']['commitment']['Row']> & {
-  ticket: {
-    id: string
-    billing: {
-      price: number
-    }
-  }[]
+	ticket: {
+		id: string
+		billing: {
+			price: number
+		}
+	}[]
 }
 
 class ShowCommitments extends Nullstack {
 
 	limit = 5
-  offset = 5
-  start = 0
-  total = 0
-  loading = false
-  error = null
-  tenents: Tenent[] = []
-  tenent = null
-  loadingSubmit = false
-  showEndAt = null
-  title = null
-  description = null
-  startAt = null
-  endAt = null
-  result: Commitment[] = []
+	offset = 5
+	start = 0
+	total = 0
+	loading = false
+	error = null
+	tenents: Tenent[] = []
+	tenent = null
+	loadingSubmit = false
+	showEndAt = null
+	title = null
+	description = null
+	startAt = null
+	endAt = null
+	result: Commitment[] = []
 
-  async initiate({ database }: NullstackClientContext<ShowCommitmentsContext>) {
-    this.loading = true
-    try {
-      const profile = await getProfilesQuery(database)
-      if (!this.error) {
-        this.tenents = profile.map((item) => item.tenent)
-        const request = database.from('commitment').select('*, ticket(id, billing(id, price))', {
-          count: 'exact',
-          head: false,
-        })
+	async hydrate({ database }: NullstackClientContext<ShowCommitmentsContext>) {
+		this.loading = true
+		try {
+			const profile = await getProfilesQuery(database)
+			this.tenents = profile.map((item) => item.tenent)
+			const request = database.from('commitment').select('*, ticket(id, billing(id, price))', {
+				count: 'exact',
+				head: false,
+			})
 
-        if (!profile.find((item) => !item.tenent && item.level === 0)) {
-          request.filter('tenent_id', 'in', `(${this.tenents.map((item) => item.id).join(',')})`)
-        }
-        const { data, count, error } = await request
-          .neq('status', 0)
-          .order('start_at', {
-            ascending: true,
-          })
-          .order('end_at', {
-            ascending: true,
-            nullsFirst: false,
-          })
-          .range(this.start, this.limit - 1)
+			if (!profile.find((item) => !item.tenent && item.level === 0)) {
+				request.filter('tenent_id', 'in', `(${this.tenents.map((item) => item.id).join(',')})`)
+			}
+			const { data, count, error } = await request
+				.neq('status', 0)
+				.order('start_at', {
+					ascending: true,
+				})
+				.order('end_at', {
+					ascending: true,
+					nullsFirst: false,
+				})
+				.range(this.start, this.limit - 1)
 
-        this.result.push(...data)
-        this.error = error
-        this.total = count
-        this.start += this.offset
-        this.limit += this.offset
-      }
-    } catch (error) {
-      this.error = error
-    }
-  }
+			this.result.push(...data)
+			this.error = error
+			this.total = count
+			this.start += this.offset
+			this.limit += this.offset
+		} catch (error) {
+			this.error = error
+		}
+	}
 
-  render() {
-    if (!this.initiated) {
-      return <div>Loading...</div>
-    }
+	render() {
+		if (!this.hydrated) {
+			return <div>Loading...</div>
+		}
 
-    return (
-      <ShowContainer title="Commitment" createPath="/adm/commitment/create">
-        {!this.result.length && this.initiated && <h1>Empty</h1>}
-        <div class="flex flex-col gap-2">
-          {this.result.map((item) => (
-            <CommitmentItem {...{ ...item }} />
-          ))}
-          {this.total > this.result.length && (
-            <button
-              class="w-full
+		return (
+			<ShowContainer title="Commitment" createPath="/adm/commitment/create">
+				{!this.result.length && this.hydrated && <h1>Empty</h1>}
+				<div class="flex flex-col gap-2">
+					{this.result.map((item) => (
+						<CommitmentItem {...{ ...item }} />
+					))}
+					{this.total > this.result.length && (
+						<button
+							class="w-full
             px-6
             py-2.5
             mb-6
@@ -113,15 +111,15 @@ class ShowCommitments extends Nullstack {
 						disabled:text-white
 						disabled:border-gray-500
 						disabled:cursor-not-allowed"
-              onclick={this.initiate}
-            >
-              Get more
-            </button>
-          )}
-        </div>
-      </ShowContainer>
-    )
-  }
+							onclick={this.initiate}
+						>
+							Get more
+						</button>
+					)}
+				</div>
+			</ShowContainer>
+		)
+	}
 
 }
 

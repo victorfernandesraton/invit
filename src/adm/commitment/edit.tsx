@@ -32,7 +32,7 @@ class EditCommitment extends CommitmentForm {
     this.currency = commitment.currency ?? 'BRL'
   }
 
-  async initiate(context: NullstackClientContext<EditCommitmentContext>) {
+  async hydrate(context: NullstackClientContext<EditCommitmentContext>) {
     try {
       const profiles = await getProfilesQuery(context.database)
 

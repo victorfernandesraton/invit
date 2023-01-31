@@ -39,7 +39,7 @@ class ShowBilling extends Nullstack {
   limit = 5
   tenents: Tenent[] = []
 
-  async initiate(context: NullstackClientContext<ShowBillingContest>) {
+  async hydrate(context: NullstackClientContext<ShowBillingContest>) {
     try {
       const profile = await getProfilesQuery(context.database)
 

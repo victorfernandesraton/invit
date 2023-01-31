@@ -31,7 +31,7 @@ abstract class BillingForm extends Nullstack {
 
   result: Database['public']['Tables']['billing']
 
-  abstract initiate(context: NullstackClientContext)
+  abstract hydrate(context: NullstackClientContext)
 
   abstract submit(context: NullstackClientContext)
 

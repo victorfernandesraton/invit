@@ -34,7 +34,7 @@ class EditBilling extends BillingForm {
     this.status = this.billing.status === 2
   }
 
-  async initiate(context: NullstackClientContext<EditBillingContext>) {
+  async hydrate(context: NullstackClientContext<EditBillingContext>) {
     try {
       const profiles = await getProfilesQuery(context.database)
 

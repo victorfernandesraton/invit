@@ -32,7 +32,7 @@ class CreateBilling extends BillingForm {
   result: Database['public']['Tables']['billing']
   status = false
 
-  async initiate(context: NullstackClientContext<CreateBillingContext>) {
+  async hydrate(context: NullstackClientContext<CreateBillingContext>) {
     try {
       const profiles = await getProfilesQuery(context.database)
 

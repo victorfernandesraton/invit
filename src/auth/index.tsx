@@ -5,7 +5,7 @@ import Register from './Register'
 
 class index extends Nullstack {
 
-  async initiate(context: NullstackClientContext<ApplicationProps>) {
+  async hydrate(context: NullstackClientContext<ApplicationProps>) {
     const {
       data: { session },
     } = await context.database.auth.getSession()

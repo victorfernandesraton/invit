@@ -17,7 +17,7 @@ class Markdon extends Nullstack<Props> {
     return data
   }
 
-  async initiate({ name }: NullstackClientContext<Props>) {
+  async hydrate({ name }: NullstackClientContext<Props>) {
     const md = new Remarkable('full')
     md.renderer.rules.heading_open = function (token, idx) {
       const itemClass = ['2xl', 'xl', 'lg']

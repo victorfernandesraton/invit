@@ -37,7 +37,7 @@ abstract class CommitmentForm extends Nullstack {
 
   abstract submit(context: NullstackClientContext): void
 
-  abstract initiate(context: NullstackClientContext): void
+  abstract hydrate(context: NullstackClientContext): void
 
   abstract delete(context: NullstackClientContext): void
 
