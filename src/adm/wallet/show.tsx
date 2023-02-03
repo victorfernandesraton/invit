@@ -3,7 +3,7 @@ import Nullstack, { NullstackClientContext } from 'nullstack'
 import { PostgrestError } from '@supabase/supabase-js'
 
 import ShowContainer from '../../components/showContainer'
-import { BaseClientContext, Ticket } from '../../types'
+import { ApplicationProps, Ticket } from '../../types'
 import WalletItem from './walletitem'
 
 type TicketResult = Ticket['Row'] & {
@@ -22,16 +22,14 @@ type TicketResult = Ticket['Row'] & {
 
 class ShowWallet extends Nullstack {
 
-	async launch(context: NullstackClientContext<BaseClientContext>) {
+	async launch(context: NullstackClientContext<ApplicationProps>) {
 		context.page.title = 'Invit - Wallet'
 	}
 
 	error?: PostgrestError
 	tickets: TicketResult[] = []
 
-	async hydrate({ database }: NullstackClientContext<BaseClientContext>) {
-		const { data: user } = await database.auth.getUser()
-
+	async hydrate({ database, auth }: NullstackClientContext<ApplicationProps>) {
 		const { data, error } = await database
 			.from('ticket')
 			.select(
@@ -52,7 +50,7 @@ class ShowWallet extends Nullstack {
 					price
 				)`,
 			)
-			.eq('owner_id', user.user.id)
+			.eq('owner_id', auth.session.user.id)
 			.neq('status', 0)
 
 		this.tickets = data

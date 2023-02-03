@@ -4,9 +4,9 @@ import ShowTenent from './show'
 
 class Tenent extends Nullstack {
 
-  render() {
-    return <ShowTenent route="/tenent" />
-  }
+	render() {
+		return <ShowTenent route="/tenent" />
+	}
 
 }
 

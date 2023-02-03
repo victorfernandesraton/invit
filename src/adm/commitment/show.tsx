@@ -1,20 +1,9 @@
 import Nullstack, { NullstackClientContext } from 'nullstack'
 
-import { SupabaseClient } from '@supabase/supabase-js'
-
 import { Database } from '../../../lib/database.types'
 import ShowContainer from '../../components/showContainer'
-import { getProfilesQuery } from '../profile/query'
+import { ApplicationProps, Tenent } from '../../types'
 import { CommitmentItem } from './item'
-
-type ShowCommitmentsContext = {
-	database: SupabaseClient
-}
-
-type Tenent = {
-	id: string
-	name: string
-}
 
 type Commitment = NullstackClientContext<Database['public']['Tables']['commitment']['Row']> & {
 	ticket: {
@@ -43,17 +32,16 @@ class ShowCommitments extends Nullstack {
 	endAt = null
 	result: Commitment[] = []
 
-	async hydrate({ database }: NullstackClientContext<ShowCommitmentsContext>) {
+	async hydrate({ database, auth }: NullstackClientContext<ApplicationProps>) {
 		this.loading = true
 		try {
-			const profile = await getProfilesQuery(database)
-			this.tenents = profile.map((item) => item.tenent)
+			this.tenents = auth.profiles.map((item) => item.tenent)
 			const request = database.from('commitment').select('*, ticket(id, billing(id, price))', {
 				count: 'exact',
 				head: false,
 			})
 
-			if (!profile.find((item) => !item.tenent && item.level === 0)) {
+			if (!auth.profiles.find((item) => !item.tenent && item.level === 0)) {
 				request.filter('tenent_id', 'in', `(${this.tenents.map((item) => item.id).join(',')})`)
 			}
 			const { data, count, error } = await request

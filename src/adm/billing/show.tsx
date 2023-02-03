@@ -1,21 +1,13 @@
 import Nullstack, { NullstackClientContext, NullstackNode } from 'nullstack'
 
-import { PostgrestError, SupabaseClient } from '@supabase/supabase-js'
+import { PostgrestError } from '@supabase/supabase-js'
 
 import { Database } from '../../../lib/database.types'
 import { numToCurrencyString } from '../../../lib/utils/currency'
-import { Profile } from '../../Application'
 import ShowContainer from '../../components/showContainer'
-import { getProfilesQuery } from '../profile/query'
+import { ApplicationProps, Tenent } from '../../types'
 import { getTenentQuery } from '../tenent/query'
-import { Tenent } from '../../types'
 
-
-
-type ShowBillingContest = {
-	database: SupabaseClient
-	profiles: Profile[]
-}
 type BillingItemType = Database['public']['Tables']['billing']['Row'] & {
 	commitment: {
 		name: string
@@ -37,11 +29,9 @@ class ShowBilling extends Nullstack {
 	limit = 5
 	tenents: Tenent[] = []
 
-	async hydrate(context: NullstackClientContext<ShowBillingContest>) {
+	async hydrate(context: NullstackClientContext<ApplicationProps>) {
 		try {
-			const profile = await getProfilesQuery(context.database)
-
-			this.tenents = await getTenentQuery(context.database, profile)
+			this.tenents = await getTenentQuery(context.database, context.auth.profiles ?? [])
 
 			const { data: billing, error: billingError } = await context.database
 				.from('billing')

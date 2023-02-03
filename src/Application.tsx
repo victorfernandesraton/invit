@@ -18,7 +18,6 @@ declare function Error(props: { error?: PostgrestError | Error }): NullstackNode
 class Application extends Nullstack {
 
 	error = null
-	user = null
 
 	prepare(context: NullstackClientContext) {
 		context.page.locale = 'en-US'

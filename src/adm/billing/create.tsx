@@ -1,17 +1,9 @@
 import { NullstackClientContext } from 'nullstack'
 
-import { SupabaseClient } from '@supabase/supabase-js'
-
 import { Database } from '../../../lib/database.types'
-import { Profile } from '../../Application'
+import { ApplicationProps } from '../../types'
 import { getCommitmentById } from '../commitment/query'
-import { getProfilesQuery } from '../profile/query'
 import BillingForm from './form'
-
-type CreateBillingContext = {
-	database: SupabaseClient
-	profiles: Profile[]
-}
 
 type Tenent = {
 	id: string
@@ -32,15 +24,13 @@ class CreateBilling extends BillingForm {
 	result: Database['public']['Tables']['billing']
 	status = false
 
-	async hydrate(context: NullstackClientContext<CreateBillingContext>) {
+	async hydrate(context: NullstackClientContext<ApplicationProps>) {
 		try {
-			const profiles = await getProfilesQuery(context.database)
-
-			this.tenents = profiles.filter((item) => item.tenent_id).map((item) => item.tenent)
+			this.tenents = context.auth.profiles.filter((item) => item.tenent_id).map((item) => item.tenent)
 			this.commitment = await getCommitmentById({
 				database: context.database,
 				commitmentId: context.params.slug.toString(),
-				profiles,
+				profiles: context.auth.profiles,
 			})
 		} catch (error) {
 			this.error = error
@@ -51,7 +41,7 @@ class CreateBilling extends BillingForm {
 		}
 	}
 
-	async submit({ database }: NullstackClientContext<CreateBillingContext>) {
+	async submit({ database }: NullstackClientContext<ApplicationProps>) {
 		const { data, error } = await database
 			.from('billing')
 			.insert<Database['public']['Tables']['billing']['Insert']>({

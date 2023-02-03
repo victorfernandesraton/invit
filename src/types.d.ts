@@ -1,7 +1,6 @@
 import { Session, SupabaseClient } from '@supabase/supabase-js'
 
 import { Database } from '../lib/database.types'
-import { Profile } from './Application'
 
 type Ticket = Database['public']['Tables']['ticket']
 
@@ -22,6 +21,6 @@ type ApplicationProps = {
 		superAdmin: boolean
 		manager: boolean
 		session?: Session
-		profiles?: Profile
+		profiles?: Profile[]
 	}
 }

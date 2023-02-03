@@ -5,12 +5,11 @@ import { SupabaseClient } from '@supabase/supabase-js'
 import { numToCurrency } from '../../lib/utils/currency'
 import { parseDateToString } from '../../lib/utils/date'
 import Markdon from '../institutional/markdon'
+import { ApplicationProps } from '../types'
 
-type ShowOneCommitmentContext = {
-	database: SupabaseClient
-}
 
-type CheckoutTicket = ShowOneCommitmentContext & {
+
+type CheckoutTicket = ApplicationProps & {
 	billing_id: string
 }
 
@@ -48,9 +47,7 @@ class ShowOneCommitment extends Nullstack {
 		context.page.description = this.description
 	}
 
-	async hydrate(context: NullstackClientContext<ShowOneCommitmentContext>) {
-		const { data: user } = await context.database.auth.getUser()
-		this.isLogged = !!user?.user?.id
+	async hydrate(context: NullstackClientContext<CheckoutTicket>) {
 		const { data: commitment, error } = await context.database
 			.from('commitment')
 			.select('*, billing(id, price, remote, description, status), tenent(id, status)')
@@ -84,9 +81,9 @@ class ShowOneCommitment extends Nullstack {
 		context.page.description = this.description
 	}
 
+	// TODO: separated component
 	async buyTicket(context: NullstackClientContext<CheckoutTicket>) {
-		const { data: user } = await context.database.auth.getUser()
-		if (!user?.user?.id) {
+		if (!context.auth.session.user?.id) {
 			const hosturl = new URL(context.router.base)
 			const url = new URL('/auth/signin', hosturl.origin)
 			url.searchParams.set('c', this.id)
@@ -99,7 +96,7 @@ class ShowOneCommitment extends Nullstack {
 			.insert({
 				billing_id: context.billing_id,
 				commitment_id: this.id,
-				owner_id: user?.user?.id,
+				owner_id: context.auth.session.user.id,
 			})
 			.select('*')
 		if (error) {
