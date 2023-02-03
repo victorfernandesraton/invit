@@ -1,15 +1,8 @@
 import Nullstack, { NullstackClientContext, NullstackNode } from 'nullstack'
 
 import Dropdown from '../components/dropdown'
+import { ApplicationProps } from '../types'
 import { ADMIN_ROUTE, COSTUMER_ROUTE, MANAGER_RUTE } from './constants'
-
-type LogoutCallback = () => void
-
-type Props = {
-	logout: LogoutCallback
-	isSuperAdmin: boolean
-	isManager: boolean
-}
 
 type NavItemProps = {
 	title: string
@@ -18,7 +11,7 @@ type NavItemProps = {
 }
 
 declare function NavItem(props: NavItemProps): NullstackNode
-declare function SideMenu(props: { logout: LogoutCallback }): NullstackNode
+declare function SideMenu(): NullstackNode
 declare function MobileMenu(): NullstackNode
 
 class Navbar extends Nullstack {
@@ -34,6 +27,13 @@ class Navbar extends Nullstack {
 		this.toggleTenent = !this.toggleTenent
 	}
 
+	async logout(context: NullstackClientContext<ApplicationProps>) {
+		await context.database.auth.signOut()
+		localStorage.removeItem('profiles')
+		context.auth = undefined
+		context.router.path = '/auth'
+	}
+
 	renderNavItem({ url, title }: NavItemProps) {
 		return (
 			<li class="nav-item px-2">
@@ -44,7 +44,7 @@ class Navbar extends Nullstack {
 		)
 	}
 
-	renderSideMenu({ logout }: { logout: LogoutCallback }) {
+	renderSideMenu() {
 		return (
 			<div class="dropdown relative ml-2">
 				<button
@@ -120,7 +120,7 @@ class Navbar extends Nullstack {
                 text-black
                 hover:bg-amber-100
               "
-							onclick={logout}
+							onclick={this.logout}
 						>
 							Logout
 						</a>
@@ -169,14 +169,14 @@ class Navbar extends Nullstack {
 		)
 	}
 
-	render({ logout, isSuperAdmin = false, isManager = false }: NullstackClientContext<Props>) {
+	render({ auth }: NullstackClientContext<ApplicationProps>) {
 		let routes = COSTUMER_ROUTE
 
-		if (isSuperAdmin) {
+		if (auth.superAdmin) {
 			routes = [...ADMIN_ROUTE, ...routes]
 		}
 
-		if (isManager) {
+		if (auth.manager) {
 			routes = [...MANAGER_RUTE, ...routes]
 		}
 		return (
@@ -198,7 +198,7 @@ class Navbar extends Nullstack {
 						</ul>
 
 						<div class="flex items-center justify-end align-bottom self-center w-full">
-							<SideMenu logout={logout} />
+							<SideMenu />
 						</div>
 					</div>
 				</div>

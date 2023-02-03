@@ -30,7 +30,6 @@ class ShowWallet extends Nullstack {
 	tickets: TicketResult[] = []
 
 	async hydrate({ database }: NullstackClientContext<BaseClientContext>) {
-
 		const { data: user } = await database.auth.getUser()
 
 		const { data, error } = await database
@@ -66,6 +65,11 @@ class ShowWallet extends Nullstack {
 		}
 		return (
 			<ShowContainer>
+				{!this.tickets.length && (
+					<div class="flex justify-center">
+						<h2 class="text-3xl">Wallet is empty</h2>
+					</div>
+				)}
 				{this.tickets.map((item) => (
 					<WalletItem {...{ ...item }} />
 				))}
