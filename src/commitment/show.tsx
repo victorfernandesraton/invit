@@ -1,27 +1,13 @@
-import Nullstack, { NullstackClientContext, NullstackNode } from 'nullstack'
+import Nullstack, { NullstackClientContext } from 'nullstack'
 
-import { SupabaseClient } from '@supabase/supabase-js'
-
-import { numToCurrency } from '../../lib/utils/currency'
 import { parseDateToString } from '../../lib/utils/date'
 import Markdon from '../institutional/markdon'
-import { ApplicationProps } from '../types'
-
-
+import { ApplicationProps, Billing } from '../types'
+import BillingItem from './billingItem'
 
 type CheckoutTicket = ApplicationProps & {
 	billing_id: string
 }
-
-type Billing = {
-	description: string
-	id: string
-	price: number
-	remote: boolean
-	status: number
-}
-
-declare function Billing(props: Billing): NullstackNode
 
 class ShowOneCommitment extends Nullstack {
 
@@ -107,47 +93,6 @@ class ShowOneCommitment extends Nullstack {
 		this.sucess = true
 	}
 
-	renderBilling({ description, price, status, id }: Billing) {
-		return (
-			<div class="flex flex-row border-b-2 border-black border-dotted justify-between items-center">
-				<div class="flex flex-col w-1/2 sm:w-2/3">
-					<p class="text-truncate md:text-xl">{description}</p>
-					<span class="text-pink-700 md:text-2xl">
-						{numToCurrency(price / 100)} {this.currency}
-					</span>
-				</div>
-				<div class="flex flex-col">
-					<button
-						onclick={() => this.buyTicket({ billing_id: id })}
-						disabled={status !== 1}
-						class="w-full
-						self-center
-            px-6
-            py-2.5
-            bg-pink-600
-            text-white
-            text-xs
-						md:text-md
-            leading-tight
-            uppercase
-            rounded
-            border border-b-4 border-r-4 border-black
-            hover:bg-white hover:text-pink-700 hover:border-pink-700
-            transition
-            duration-150
-            ease-in-out
-						disabled:bg-pink-400
-						disabled:text-white
-						disabled:border-gray-500
-						disabled:cursor-not-allowed"
-					>
-						{status !== 1 ? 'Not avaliable' : 'Buy'}
-					</button>
-				</div>
-			</div>
-		)
-	}
-
 	render() {
 		if (!this.hydrated) {
 			return <p>Loading....</p>
@@ -190,7 +135,7 @@ class ShowOneCommitment extends Nullstack {
 							<div class="flex flex-col h-full">
 								{!this.billings.length && <p>Not found prices for buy this ticket... Please try later</p>}
 								{this.billings.map((item) => (
-									<Billing {...{ ...item }} />
+									<BillingItem {...{ ...item }} currency={this.currency} />
 								))}
 							</div>
 						</div>

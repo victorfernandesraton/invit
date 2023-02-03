@@ -20,7 +20,6 @@ class ShowCommitments extends Nullstack {
 	offset = 5
 	start = 0
 	total = 0
-	loading = false
 	error = null
 	tenents: Tenent[] = []
 	tenent = null
@@ -33,7 +32,6 @@ class ShowCommitments extends Nullstack {
 	result: Commitment[] = []
 
 	async hydrate({ database, auth }: NullstackClientContext<ApplicationProps>) {
-		this.loading = true
 		try {
 			this.tenents = auth.profiles.map((item) => item.tenent)
 			const request = database.from('commitment').select('*, ticket(id, billing(id, price))', {
@@ -41,7 +39,7 @@ class ShowCommitments extends Nullstack {
 				head: false,
 			})
 
-			if (!auth.profiles.find((item) => !item.tenent && item.level === 0)) {
+			if (!auth.superAdmin) {
 				request.filter('tenent_id', 'in', `(${this.tenents.map((item) => item.id).join(',')})`)
 			}
 			const { data, count, error } = await request
@@ -54,7 +52,6 @@ class ShowCommitments extends Nullstack {
 					nullsFirst: false,
 				})
 				.range(this.start, this.limit - 1)
-
 			this.result.push(...data)
 			this.error = error
 			this.total = count
@@ -62,6 +59,7 @@ class ShowCommitments extends Nullstack {
 			this.limit += this.offset
 		} catch (error) {
 			this.error = error
+
 		}
 	}
 

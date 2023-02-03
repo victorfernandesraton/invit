@@ -15,6 +15,16 @@ type Profile = Database['public']['Tables']['profile']['Row'] & {
 	tenent?: Tenent
 }
 
+type Billing = {
+	description: string
+	id: string
+	price: number
+	remote: boolean
+	status: number
+	currency: string
+}
+
+
 type ApplicationProps = {
 	database: SupabaseClient
 	auth: {

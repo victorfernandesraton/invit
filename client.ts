@@ -26,6 +26,7 @@ context.start = async function start({ settings }: NullstackClientContext<Applic
 			session: data.session,
 			superAdmin: !!profiles.find((p) => p.level === 0),
 			manager: !!profiles.find((p) => p.level === 0 || p.tenent_id),
+			profiles,
 		}
 	}
 

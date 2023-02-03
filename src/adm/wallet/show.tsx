@@ -68,9 +68,11 @@ class ShowWallet extends Nullstack {
 						<h2 class="text-3xl">Wallet is empty</h2>
 					</div>
 				)}
-				{this.tickets.map((item) => (
-					<WalletItem {...{ ...item }} />
-				))}
+				<section class="flex flex-col gap-2">
+					{this.tickets.map((item) => (
+						<WalletItem {...{ ...item }} />
+					))}
+				</section>
 			</ShowContainer>
 		)
 	}
