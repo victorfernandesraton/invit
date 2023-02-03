@@ -8,25 +8,23 @@ import { Profile } from '../../Application'
 import ShowContainer from '../../components/showContainer'
 import { getProfilesQuery } from '../profile/query'
 import { getTenentQuery } from '../tenent/query'
+import { Tenent } from '../../types'
 
-type Tenent = {
-  id: string
-  name: string
-}
+
 
 type ShowBillingContest = {
-  database: SupabaseClient
-  profiles: Profile[]
+	database: SupabaseClient
+	profiles: Profile[]
 }
 type BillingItemType = Database['public']['Tables']['billing']['Row'] & {
-  commitment: {
-    name: string
-    id: string
-    currency: string
-  }
-  ticket: {
-    id: string
-  }[]
+	commitment: {
+		name: string
+		id: string
+		currency: string
+	}
+	ticket: {
+		id: string
+	}[]
 }
 
 declare function BillingItem(props: BillingItemType): NullstackNode
@@ -34,96 +32,96 @@ declare function BillingItem(props: BillingItemType): NullstackNode
 class ShowBilling extends Nullstack {
 
 	result: BillingItemType[] = []
-  error: Error | PostgrestError = null
-  offset = 0
-  limit = 5
-  tenents: Tenent[] = []
+	error: Error | PostgrestError = null
+	offset = 0
+	limit = 5
+	tenents: Tenent[] = []
 
-  async hydrate(context: NullstackClientContext<ShowBillingContest>) {
-    try {
-      const profile = await getProfilesQuery(context.database)
+	async hydrate(context: NullstackClientContext<ShowBillingContest>) {
+		try {
+			const profile = await getProfilesQuery(context.database)
 
-      this.tenents = await getTenentQuery(context.database, profile)
+			this.tenents = await getTenentQuery(context.database, profile)
 
-      const { data: billing, error: billingError } = await context.database
-        .from('billing')
-        .select('* , commitment (currency, id), ticket(id)')
-        .in(
-          'commitment.tenent_id',
-          this.tenents.map((item) => item.id),
-        )
-        .neq('status', 0)
-        .eq('commitment_id', context.params.slug)
-        .range(this.offset, this.limit)
+			const { data: billing, error: billingError } = await context.database
+				.from('billing')
+				.select('* , commitment (currency, id), ticket(id)')
+				.in(
+					'commitment.tenent_id',
+					this.tenents.map((item) => item.id),
+				)
+				.neq('status', 0)
+				.eq('commitment_id', context.params.slug)
+				.range(this.offset, this.limit)
 
-      this.error = billingError
-      if (!this.error) {
-        this.result = billing
-      }
-    } catch (error) {
-      this.error = error
-    }
-  }
+			this.error = billingError
+			if (!this.error) {
+				this.result = billing
+			}
+		} catch (error) {
+			this.error = error
+		}
+	}
 
-  renderBillingItem({ price, description, commitment, id, remote, ticket }: NullstackClientContext<BillingItemType>) {
-    const unitValue = price / 100
+	renderBillingItem({ price, description, commitment, id, remote, ticket }: NullstackClientContext<BillingItemType>) {
+		const unitValue = price / 100
 
-    return (
-      <div class="mb-4 p-6 flex flex-col md:flex-row justify-between rounded-lg bg-white border border-black border-b-4 border-r-4">
-        <div class="flex flex-col">
-          <div class="flex flex-col mb-2 gap-2">
-            <div class="flex text-pink-600 gap-2 font-medium text-xs underline underline-offset-1">
-              <a href={`/adm/commitment/${commitment.id}/billing/${id}`} class="">
-                Edit
-              </a>
-              <a href={`/adm/commitment/${commitment.id}/ticket?billing=${id}`} class="">
-                Tickets
-              </a>
-            </div>
-            <p class="text-black text-xl font-medium text-ellipsis	">{description}</p>
-            <div class="flex flex-row text-xl gap-2">
-              <p class="">Remote:</p>
-              <spam class="capitalize text-pink-700">{remote ? 'yes' : 'no'}</spam>
-            </div>
-          </div>
-          <div class="flex flex-row gap-2">
-            <p class="text-lg">Total selling</p>
-            <span class="text-pink-700 text-lg">{ticket.length} Tickets</span>
-          </div>
-        </div>
-        <div class="flex flex-col gap-2 text-lg">
-          <div class="flex flex-col">
-            <p class="">Price </p>
-            <span class="text-pink-700">
-              {numToCurrencyString(unitValue, commitment.currency)} {commitment.currency}
-            </span>
-          </div>
+		return (
+			<div class="mb-4 p-6 flex flex-col md:flex-row justify-between rounded-lg bg-white border border-black border-b-4 border-r-4">
+				<div class="flex flex-col">
+					<div class="flex flex-col mb-2 gap-2">
+						<div class="flex text-pink-600 gap-2 font-medium text-xs underline underline-offset-1">
+							<a href={`/adm/commitment/${commitment.id}/billing/${id}`} class="">
+								Edit
+							</a>
+							<a href={`/adm/commitment/${commitment.id}/ticket?billing=${id}`} class="">
+								Tickets
+							</a>
+						</div>
+						<p class="text-black text-xl font-medium text-ellipsis	">{description}</p>
+						<div class="flex flex-row text-xl gap-2">
+							<p class="">Remote:</p>
+							<spam class="capitalize text-pink-700">{remote ? 'yes' : 'no'}</spam>
+						</div>
+					</div>
+					<div class="flex flex-row gap-2">
+						<p class="text-lg">Total selling</p>
+						<span class="text-pink-700 text-lg">{ticket.length} Tickets</span>
+					</div>
+				</div>
+				<div class="flex flex-col gap-2 text-lg">
+					<div class="flex flex-col">
+						<p class="">Price </p>
+						<span class="text-pink-700">
+							{numToCurrencyString(unitValue, commitment.currency)} {commitment.currency}
+						</span>
+					</div>
 
-          <div class="flex flex-col">
-            <p class="">Ammount total</p>
-            <h5 class="text-pink-700 text-lg">
-              {numToCurrencyString(unitValue * ticket.length, commitment.currency)} {commitment.currency}
-            </h5>
-          </div>
-        </div>
-      </div>
-    )
-  }
+					<div class="flex flex-col">
+						<p class="">Ammount total</p>
+						<h5 class="text-pink-700 text-lg">
+							{numToCurrencyString(unitValue * ticket.length, commitment.currency)} {commitment.currency}
+						</h5>
+					</div>
+				</div>
+			</div>
+		)
+	}
 
-  render({ params }: NullstackClientContext) {
-    if (!this.initiated) {
-      return <div>Loading...</div>
-    }
+	render({ params }: NullstackClientContext) {
+		if (!this.initiated) {
+			return <div>Loading...</div>
+		}
 
-    return (
-      <ShowContainer title="Billing" createPath={`/adm/commitment/${params.slug}/billing/create`}>
-        {!this.result.length && this.initiated && <h1>Empty</h1>}
-        {this.result.map((item) => (
-          <BillingItem {...{ ...item }} commitment={item.commitment} />
-        ))}
-      </ShowContainer>
-    )
-  }
+		return (
+			<ShowContainer title="Billing" createPath={`/adm/commitment/${params.slug}/billing/create`}>
+				{!this.result.length && this.initiated && <h1>Empty</h1>}
+				{this.result.map((item) => (
+					<BillingItem {...{ ...item }} commitment={item.commitment} />
+				))}
+			</ShowContainer>
+		)
+	}
 
 }
 

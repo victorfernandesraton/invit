@@ -7,6 +7,7 @@ import '../tailwind.css'
 import { Database } from '../lib/database.types'
 import Adm from './adm'
 import { getProfilesQuery } from './adm/profile/query'
+import Wallet from './adm/wallet'
 import Auth from './auth/index'
 import Commitment from './commitment'
 import Home from './Home'
@@ -92,6 +93,7 @@ class Application extends Nullstack {
 					<Auth route="/auth/*" />
 					<Adm route="/adm/*" />
 					<Commitment route="/commitment/*" />
+					<Wallet route="/wallet/*" />
 					<Error route="/error" error={this.error} />
 					<NotFound route="*" />
 				</div>

@@ -1,16 +1,16 @@
-import Nullstack from 'nullstack'
+import Nullstack, { NullstackClientContext } from 'nullstack'
 
 import ShowOneCommitment from './show'
 
 class Commitment extends Nullstack {
-	
-	render() {
-    return (
-      <>
-        <ShowOneCommitment route="/commitment/:slug" />
-      </>
-    )
-  }
+
+	render({ router }: NullstackClientContext) {
+		return (
+			<>
+				<ShowOneCommitment key={router.path} route="/commitment/:slug" />
+			</>
+		)
+	}
 
 }
 

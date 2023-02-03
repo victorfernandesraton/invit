@@ -187,10 +187,11 @@ class ShowOneCommitment extends Nullstack {
 							)}
 						</div>
 					</div>
-					<div class="flex flex-row p-6 justify-start border-black border-2 border-r-4 items-center border-b-4 rounded-3xl lg:w-2/3">
-						<div class="flex flex-col w-full">
+					<div class="flex flex-row p-6 justify-start border-black border-2 border-r-4 border-b-4 rounded-3xl lg:w-2/3">
+						<div class="flex flex-col w-full h-full gap-6">
 							<h3 class="md:text-5xl text-2xl">Prices</h3>
-							<div class="flex flex-col">
+							<div class="flex flex-col h-full">
+								{!this.billings.length && <p>Not found prices for buy this ticket... Please try later</p>}
 								{this.billings.map((item) => (
 									<Billing {...{ ...item }} />
 								))}

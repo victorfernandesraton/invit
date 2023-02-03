@@ -5,7 +5,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nullstack": "^0.17.2",
+    "nullstack": "^0.17.4",
     "postcss-loader": "^7.0.1",
     "supabase": "^1.27.7",
     "tailwindcss": "^3.0.0",
@@ -16,7 +16,7 @@
     "start": "npx nullstack start",
     "build": "npx nullstack build",
     "webpack:profile": "webpack --profile --json > stats.json",
-		"webpack:analyzer": "webpack-bundle-analyzer ./stats.json",
+    "webpack:analyzer": "webpack-bundle-analyzer ./stats.json",
     "migrate:diff": "npx supabase db diff --use-migra -f",
     "migrate:push": "npx supabase db push",
     "migrate:types": "npx supabase gen types typescript --local > lib/database.types.ts",
@@ -26,6 +26,8 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.2.3",
+    "qrcode": "^1.5.1",
+    "qrcode-svg": "^1.1.0",
     "remarkable": "^2.0.1",
     "tw-elements": "^1.0.0-alpha13"
   }
