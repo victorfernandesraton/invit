@@ -1,10 +1,22 @@
-import Nullstack, { NullstackClientContext } from 'nullstack'
+import Nullstack, { NullstackClientContext, NullstackServerContext } from 'nullstack'
 
 import QRCode from 'qrcode-svg'
 
 import { numToCurrency } from '../../../lib/utils/currency'
 import { parseDateToString } from '../../../lib/utils/date'
-import { Ticket } from '../../types'
+import { ApplicationProps, Ticket } from '../../types'
+
+type TicketPost = {
+	data: {
+		// ticket: {
+		// 	id: string
+		// 	title: string
+		// }
+		user: {
+			email: string
+		}
+	}
+}
 
 type TicketResult = Ticket['Row'] & {
 	commitment: {
@@ -23,6 +35,7 @@ type TicketResult = Ticket['Row'] & {
 class WalletItem extends Nullstack {
 
 	qrCode = null
+	ticketGoogle = null
 	static async getQRCode({ data }) {
 		const res = new QRCode({ content: data.id, width: 125, height: 125 })
 		return res.svg()
@@ -32,7 +45,25 @@ class WalletItem extends Nullstack {
 		this.qrCode = await this.getQRCode({ data: { id } })
 	}
 
-	render({ commitment, billing }: NullstackClientContext<TicketResult>) {
+	async postTicket({ data }: NullstackServerContext<TicketPost>) {
+		console.log(data)
+		try {
+			const res = await fetch('/api/pass/google', {
+				method: 'POST',
+				headers: {
+					Accept: 'application/json, text/plain, */*',
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(data.user),
+			})
+			const result = await res.json()
+			this.ticketGoogle = result.link
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
+	render({ commitment, billing, auth }: NullstackClientContext<ApplicationProps & TicketResult>) {
 		return (
 			<div class="flex flex-col md:flex-row justify-between border border-b-4 border-r-4 border-black rounded-3xl">
 				<div class="flex flex-col w-full p-6 ">
@@ -56,6 +87,14 @@ class WalletItem extends Nullstack {
 				<div class="justify-center flex border-0 sm:border-l-2 border-t-2 border-black border-dotted p-2">
 					{!this.hydrated ? <p>Loading</p> : <div class="flex items-center" html={this.qrCode} />}
 				</div>
+				<button
+					onclick={() => {
+						this.postTicket({ data: { user: { email: auth.session.user.email } } })
+					}}
+				>
+					Google pay tickewt
+				</button>
+				{this.ticketGoogle && <a href={this.ticketGoogle}>Google link</a>}
 			</div>
 		)
 	}
