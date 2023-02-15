@@ -1,4 +1,4 @@
-import Nullstack, { NullstackClientContext, NullstackServerContext } from 'nullstack'
+import Nullstack, { NullstackClientContext } from 'nullstack'
 
 import QRCode from 'qrcode-svg'
 
@@ -8,10 +8,16 @@ import { ApplicationProps, Ticket } from '../../types'
 
 type TicketPost = {
 	data: {
-		// ticket: {
-		// 	id: string
-		// 	title: string
-		// }
+		ticket: {
+			id: number
+			title: string
+			description: string
+			start_at: Date
+			end_at?: Date
+			price: number
+			currency: string
+			remote: boolean
+		}
 		user: {
 			email: string
 		}
@@ -29,6 +35,7 @@ type TicketResult = Ticket['Row'] & {
 	billing: {
 		remote: boolean
 		price: number
+		description: string
 	}
 }
 
@@ -45,8 +52,7 @@ class WalletItem extends Nullstack {
 		this.qrCode = await this.getQRCode({ data: { id } })
 	}
 
-	async postTicket({ data }: NullstackServerContext<TicketPost>) {
-		console.log(data)
+	async postTicket({ data }: TicketPost) {
 		try {
 			const res = await fetch('/api/pass/google', {
 				method: 'POST',
@@ -54,7 +60,9 @@ class WalletItem extends Nullstack {
 					Accept: 'application/json, text/plain, */*',
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify(data.user),
+				body: JSON.stringify({
+					...data,
+				}),
 			})
 			const result = await res.json()
 			this.ticketGoogle = result.link
@@ -63,7 +71,7 @@ class WalletItem extends Nullstack {
 		}
 	}
 
-	render({ commitment, billing, auth }: NullstackClientContext<ApplicationProps & TicketResult>) {
+	render({ commitment, billing, auth, id }: NullstackClientContext<ApplicationProps & TicketResult>) {
 		return (
 			<div class="flex flex-col md:flex-row justify-between border border-b-4 border-r-4 border-black rounded-3xl">
 				<div class="flex flex-col w-full p-6 ">
@@ -89,7 +97,17 @@ class WalletItem extends Nullstack {
 				</div>
 				<button
 					onclick={() => {
-						this.postTicket({ data: { user: { email: auth.session.user.email } } })
+						this.postTicket({
+							data: {
+								user: { email: auth.session.user.email },
+								ticket: {
+									id,
+									...commitment,
+									...billing,
+									description: billing.description,
+								},
+							},
+						})
 					}}
 				>
 					Google pay tickewt

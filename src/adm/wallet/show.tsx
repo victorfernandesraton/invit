@@ -17,6 +17,7 @@ type TicketResult = Ticket['Row'] & {
 	billing: {
 		remote: boolean
 		price: number
+		description: string
 	}
 }
 
@@ -47,7 +48,8 @@ class ShowWallet extends Nullstack {
 				billing(
 					id,
 					remote,
-					price
+					price,
+					description
 				)`,
 			)
 			.eq('owner_id', auth.session.user.id)
