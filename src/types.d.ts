@@ -24,7 +24,6 @@ type Billing = {
 	currency: string
 }
 
-
 type ApplicationProps = {
 	database: SupabaseClient
 	auth: {
@@ -32,5 +31,25 @@ type ApplicationProps = {
 		manager: boolean
 		session?: Session
 		profiles?: Profile[]
+	}
+}
+
+type TicketPost = {
+	data: {
+		ticket: {
+			commitment_id: string
+			id: number
+			title: string
+			description: string
+			start_at: Date
+			end_at?: Date
+			price: number
+			currency: string
+			remote: boolean
+		}
+		user: {
+			email: string
+			name?: string
+		}
 	}
 }

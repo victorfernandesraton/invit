@@ -4,25 +4,8 @@ import QRCode from 'qrcode-svg'
 
 import { numToCurrency } from '../../../lib/utils/currency'
 import { parseDateToString } from '../../../lib/utils/date'
-import { ApplicationProps, Ticket } from '../../types'
-
-type TicketPost = {
-	data: {
-		ticket: {
-			id: number
-			title: string
-			description: string
-			start_at: Date
-			end_at?: Date
-			price: number
-			currency: string
-			remote: boolean
-		}
-		user: {
-			email: string
-		}
-	}
-}
+import GoogleWalletButton from '../../components/googleWalletButton'
+import { ApplicationProps, Ticket, TicketPost } from '../../types'
 
 type TicketResult = Ticket['Row'] & {
 	commitment: {
@@ -71,7 +54,7 @@ class WalletItem extends Nullstack {
 		}
 	}
 
-	render({ commitment, billing, auth, id }: NullstackClientContext<ApplicationProps & TicketResult>) {
+	render({ commitment, billing, auth, id, commitment_id }: NullstackClientContext<ApplicationProps & TicketResult>) {
 		return (
 			<div class="flex flex-col md:flex-row justify-between border border-b-4 border-r-4 border-black rounded-3xl">
 				<div class="flex flex-col w-full p-6 ">
@@ -104,6 +87,7 @@ class WalletItem extends Nullstack {
 									id,
 									...commitment,
 									...billing,
+									commitment_id,
 									description: billing.description,
 								},
 							},
@@ -112,7 +96,8 @@ class WalletItem extends Nullstack {
 				>
 					Google pay tickewt
 				</button>
-				{this.ticketGoogle && <a href={this.ticketGoogle}>Google link</a>}
+				{/* TODO move to modal */}
+				<div class="flex flex-col">{this.ticketGoogle && <GoogleWalletButton link={this.ticketGoogle} />}</div>
 			</div>
 		)
 	}

@@ -1,39 +1,34 @@
+import { TicketPost } from '../src/types'
 import { numToCurrencyString } from './utils/currency'
 import { parseDateToString } from './utils/date'
 
-type TicketParams = {
-	ticket: {
-		id: number
-		title: string
-		description: string
-		start_at: Date
-		end_at?: Date
-		price: number
-		currency: string
-		remote: boolean
-	}
-	user: {
-		email: string
-		name: string
-	}
-}
-
-export function createGoogleClass(classId: string) {
+export function createGoogleClass(classId: string, params: TicketPost['data']) {
 	return {
-		eventId: `${classId}`,
+		eventId: `${classId}_${params.ticket.commitment_id}`,
 		eventName: {
 			defaultValue: {
 				language: 'en-US',
-				value: 'Event name',
+				value: params.ticket.title,
 			},
 		},
-		id: `${classId}`,
+		venue: {
+			name: {
+				defaultValue: {
+					language: 'en-US',
+					value: params.ticket.description,
+				},
+			},
+		},
+		dateTime: {
+			start: params.ticket.start_at,
+		},
+		id: `${classId}_CLASS_${params.ticket.commitment_id}`,
 		issuerName: 'Issuer name',
 		reviewStatus: 'UNDER_REVIEW',
 	}
 }
 
-export function createGoogleTicket(issuerId: string, classId: string, params: TicketParams) {
+export function createGoogleTicket(issuerId: string, classId: string, params: TicketPost['data']) {
 	const textModulesData = [
 		{
 			id: 'price',
@@ -62,7 +57,7 @@ export function createGoogleTicket(issuerId: string, classId: string, params: Ti
 
 	return {
 		id: `${issuerId}.${params.ticket.id}`,
-		classId: `${classId}`,
+		classId: `${classId}_CLASS_${params.ticket.commitment_id}`,
 		genericType: 'GENERIC_TYPE_UNSPECIFIED',
 		hexBackgroundColor: '#4285f4',
 		cardTitle: {
@@ -86,11 +81,6 @@ export function createGoogleTicket(issuerId: string, classId: string, params: Ti
 		barcode: {
 			type: 'QR_CODE',
 			value: `${params.ticket.id}`,
-		},
-		heroImage: {
-			sourceUri: {
-				uri: 'https://storage.googleapis.com/wallet-lab-tools-codelab-artifacts-public/google-io-hero-demo-only.jpg',
-			},
 		},
 	}
 }
