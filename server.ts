@@ -18,7 +18,7 @@ const credentials = JSON.parse(
 )
 
 // TODO: Define Class ID
-const classId = `${issuerId}.BASIC_TICKET`
+const classId = `${issuerId}.BASIC_TICKET_001`
 
 const baseUrl = 'https://walletobjects.googleapis.com/walletobjects/v1'
 
@@ -52,7 +52,7 @@ async function createPassClass(req, res) {
 			})
 
 			console.log('Class insert response')
-			// console.log(response)
+			console.log(response)
 		} else {
 			// Something else went wrong
 			console.log(err)
@@ -82,6 +82,7 @@ async function createPassObject(req, res) {
 
 	const token = jwt.sign(claims, credentials.private_key, { algorithm: 'RS256' })
 	const saveUrl = `https://pay.google.com/gp/v/save/${token}`
+	console.log(saveUrl)
 
 	res.send({ link: `${saveUrl}` })
 }

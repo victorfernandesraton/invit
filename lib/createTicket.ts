@@ -20,57 +20,16 @@ type TicketParams = {
 
 export function createGoogleClass(classId: string) {
 	return {
-		id: classId,
-		classTemplateInfo: {
-			cardTemplateOverride: {
-				cardRowTemplateInfos: [
-					{
-						twoItems: {
-							startItem: {
-								firstValue: {
-									fields: [
-										{
-											fieldPath: "object.textModulesData['price']",
-										},
-									],
-								},
-							},
-							endItem: {
-								firstValue: {
-									fields: [
-										{
-											fieldPath: "object.textModulesData['remote']",
-										},
-									],
-								},
-							},
-						},
-					},
-					{
-						twoItems: {
-							startItem: {
-								firstValue: {
-									fields: [
-										{
-											fieldPath: "object.textModulesData['start_at']",
-										},
-									],
-								},
-							},
-							endItem: {
-								firstValue: {
-									fields: [
-										{
-											fieldPath: "object.textModulesData['end_at']",
-										},
-									],
-								},
-							},
-						},
-					},
-				],
+		eventId: `${classId}`,
+		eventName: {
+			defaultValue: {
+				language: 'en-US',
+				value: 'Event name',
 			},
 		},
+		id: `${classId}`,
+		issuerName: 'Issuer name',
+		reviewStatus: 'UNDER_REVIEW',
 	}
 }
 
@@ -104,14 +63,8 @@ export function createGoogleTicket(issuerId: string, classId: string, params: Ti
 	return {
 		id: `${issuerId}.${params.ticket.id}`,
 		classId: `${classId}`,
-		logo: {
-			contentDescription: {
-				defaultValue: {
-					language: 'en',
-					value: params.ticket.description,
-				},
-			},
-		},
+		genericType: 'GENERIC_TYPE_UNSPECIFIED',
+		hexBackgroundColor: '#4285f4',
 		cardTitle: {
 			defaultValue: {
 				language: 'en',
@@ -130,12 +83,14 @@ export function createGoogleTicket(issuerId: string, classId: string, params: Ti
 				value: params.user.name ?? params.user.email,
 			},
 		},
-		textModulesData,
 		barcode: {
 			type: 'QR_CODE',
-			value: 'BARCODE_VALUE',
-			alternateText: null,
+			value: `${params.ticket.id}`,
 		},
-		hexBackgroundColor: '#ed02e5',
+		heroImage: {
+			sourceUri: {
+				uri: 'https://storage.googleapis.com/wallet-lab-tools-codelab-artifacts-public/google-io-hero-demo-only.jpg',
+			},
+		},
 	}
 }
